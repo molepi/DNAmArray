@@ -5,7 +5,7 @@
 ##' @param targets data.frame representing valid targets file as is
 ##' used within the minfi package
 ##' @param verbose logical default TRUE
-##' @param ... optional arguments to read.450k.exp
+##' @param ... optional arguments to read.metharray.exp
 ##' @return RGset
 ##' @author mvaniterson
 ##' @export
@@ -13,7 +13,7 @@
 ##' @importFrom BiocParallel bplapply bpworkers bpparam
 ##' @importFrom Biobase combine
 ##' @importFrom utils str
-read.450k.exp.par <- function(targets, verbose = TRUE, ...) {
+read.metharray.exp.par <- function(targets, verbose = TRUE, ...) {
     nworkers <- bpworkers(bpparam())
     if (nworkers <= 1)
         stop("Did you registered a biocparallel back-end?")
@@ -25,7 +25,7 @@ read.450k.exp.par <- function(targets, verbose = TRUE, ...) {
         ##these need to be loaded on the worker nodes explicitly for BatchJobs!
         requireNamespace("minfi")
         requireNamespace("Biobase")
-        read.450k.exp(targets = x, ...)
+        read.metharray.exp(targets = x, ...)
     }
 
     message("Reading multiple idat-files in parallel")
@@ -95,7 +95,7 @@ detectionP <- function(rgSet, type = "m+u", na.rm=FALSE) {
 ##' @import FDb.InfiniumMethylation.hg19
 ##' @importFrom GenomicFeatures features
 ##' @export 
-getSex.Leiden450K <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000){
+getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000){
     InfMet <- features(FDb.InfiniumMethylation.hg19)    
     chrX <- names(InfMet[as.vector(seqnames(InfMet)) %in% "chrX"])    
     chrX <- chrX[grep("cg", chrX)]
