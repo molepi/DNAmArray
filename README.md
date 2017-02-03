@@ -24,7 +24,7 @@ use:
 
 ```{r devtools, eval=FALSE}
 library(devtools)
-install_git("https://git.lumc.nl/molepi/DNAmArray.git")
+install_github("molepi/DNAmArray")
 ```
 
 ## Install from source using `git/R` ##
