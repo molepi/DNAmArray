@@ -2,4 +2,6 @@
 
 language: R
 sudo: false
+r: bioc-release
+r_check_args: --no-examples
 cache: packages
