@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 # Overview #
 
 [![Travis-CI Build Status](https://travis-ci.org/molepi/DNAmArray.svg?branch=master)](https://travis-ci.org/molepi/DNAmArray)
