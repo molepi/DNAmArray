@@ -1,4 +1,4 @@
-# Streamlined workflow for the quality control, normalization and bias-free analysis of Illumina methylation array data - The Leiden approach: [workflow](https://molepi.github.io/DNAmArray_workflow/). #
+# Streamlined workflow for the quality control, normalization and bias-free analysis of Illumina methylation array data - The Leiden approach #
 
 
 ![alt text](http://www.molepi.nl/images/logo.png)
@@ -7,6 +7,10 @@
 	     
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.158908.svg)](https://doi.org/10.5281/zenodo.158908)
 
+
+# Workflow #
+
+Check out our compleet workflow: [workflow](https://molepi.github.io/DNAmArray_workflow/)
 
 # Installation #
 
