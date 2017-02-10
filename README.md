@@ -32,7 +32,7 @@ library(devtools)
 install_github("molepi/DNAmArray")
 ```
 
-Sometimes `install_github` fails with CA cert error. Try running `r httr::set_config( httr::config( ssl_verifypeer = 0L ) )` before running `install_github`!
+Sometimes `install_github` fails with CA cert error. Try running `httr::set_config(httr::config( ssl_verifypeer = 0L))` before running `install_github`!
 
 ## Install from source using `git/R` ##
 
