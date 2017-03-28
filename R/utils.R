@@ -202,9 +202,7 @@ qqpf <- function(pval, p=0.90, k=7, add=FALSE, show.fit=FALSE, pch=16, col=1, nh
 ##' @importFrom GenomeInfoDb mapSeqlevels keepSeqlevels renameSeqlevels seqlevels seqlevels<-
 ##' @importFrom AnnotationDbi select
 ##' @export
-cpgInfo <- function(cpgs, TxDb=c("TxDb.Hsapiens.UCSC.hg19.knownGene", "TxDb.Hsapiens.UCSC.hg19.ensGene")) {
-
-    TxDb <- match.arg(TxDb)
+cpgInfo <- function(cpgs, TxDb) {
     
     if(!requireNamespace(TxDb, character.only = TRUE))
         stop("TxDb:", TxDb, " not available!")

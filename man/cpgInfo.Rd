@@ -4,8 +4,7 @@
 \alias{cpgInfo}
 \title{nearestGenes}
 \usage{
-cpgInfo(cpgs, TxDb = c("TxDb.Hsapiens.UCSC.hg19.knownGene",
-  "TxDb.Hsapiens.UCSC.hg19.ensGene"))
+cpgInfo(cpgs, TxDb)
 }
 \arguments{
 \item{cpgs}{list of illumina cpg identifiers}
