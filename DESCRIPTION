@@ -2,7 +2,7 @@ Package: DNAmArray
 Title: Streamlined workflow for the quality control, normalization and
        bias-free analysis of Illumina methylation array data - The Leiden
        approach
-Version: 0.0.1
+Version: 0.0.2
 Author: Maarten van Iterson, Elmar Tobi, Roderick Slieker,
     Wouter den Hollander, Rene Luijk Koen Dekkers and Bas Heijmans
 Maintainer: Maarten van Iterson <m.van_iterson@lumc.nl>
