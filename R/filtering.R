@@ -61,6 +61,8 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
         }
 
         for(i in 1:ncol(RGset)) {
+            if(verbose & i%%100 == 0)
+                message("... done ", i, "out of ", ncol(RGset), "...")
             idRed <- c(names(which(idT2[,i])), names(which(idT1Red[,i])))
             midRed <- match(idRed, rownames(Red))
             Red[midRed, i] <- NA
