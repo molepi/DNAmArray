@@ -20,7 +20,8 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
     if(verbose)
         message("Calculate and filter on number of beads...")
 
-    beadmat <- assayDataElement(RGset,"NBeads")
+    beadmat <- getNBeads(RGset)
+    
     idBeadmat <- beadmat < cutbead
     ##beadmat[idBeadmat] <- NA
 
