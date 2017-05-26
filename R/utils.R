@@ -21,7 +21,7 @@ read.metharray.exp.par <- function(targets, verbose = TRUE, ...) {
     y <- y[1:nrow(targets)]
     jobs <- split(targets, y)
 
-    fun <- function(x) {
+    fun <- function(x, ...) {
         ##these need to be loaded on the worker nodes explicitly for BatchJobs!
         requireNamespace("minfi")
         requireNamespace("Biobase")
@@ -29,7 +29,7 @@ read.metharray.exp.par <- function(targets, verbose = TRUE, ...) {
     }
 
     message("Reading multiple idat-files in parallel")
-    res <- bplapply(jobs, FUN = fun)
+    res <- bplapply(jobs, FUN = fun, ...)
     if(verbose)
         message(str(res))
     message("Combining the RGsets to one big RGset")
