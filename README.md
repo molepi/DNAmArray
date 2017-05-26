@@ -14,9 +14,12 @@ Check out our compleet workflow: [workflow](https://molepi.github.io/DNAmArray_w
 
 # Installation #
 
-The **DNAmArray**-package can be installed in several
-ways which are described below. The package has been installed
-successfully for >= R-3.2.0 on different linux-builds.
+The **DNAmArray**-package can be installed in several ways which are
+described below. The package has been installed successfully for >=
+R-3.2.0 on different linux-builds. Currently, two branches are
+available:
+1. master for >= R-3.4.0 compatible with >= 1.22.1 minfi
+2. R-3.3.0  for older R and minfi version's
 
 The package depends on many other packages from
 [BioConductor](https://www.bioconductor.org) or
@@ -33,7 +36,8 @@ use:
 
 ```{r devtools, eval=FALSE}
 library(devtools)
-install_github("molepi/DNAmArray")
+install_github("molepi/DNAmArray") ##for master
+install_github("molepi/DNAmArray", branch="R-3.3.0") ##for other branches
 ```
 
 Sometimes `install_github` fails with CA cert error. Try running `httr::set_config(httr::config( ssl_verifypeer = 0L))` before running `install_github`!

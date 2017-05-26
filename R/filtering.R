@@ -74,11 +74,8 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
     }
 
     RGChannelSet(Green = Grn, Red = Red,
-                 phenoData = phenoData(RGset),
-                 featureData = featureData(RGset),
-                 experimentData = experimentData(RGset),
-                 annotation = annotation(RGset),
-                 protocolData = protocolData(RGset))
+                 colData = colData(RGset),
+                 annotation = annotation(RGset))
 }
 
 
