@@ -37,7 +37,7 @@ use:
 ```{r devtools, eval=FALSE}
 library(devtools)
 install_github("molepi/DNAmArray") ##for master
-install_github("molepi/DNAmArray", branch="R-3.3.0") ##for other branches
+install_github("molepi/DNAmArray", ref="R-3.3.0") ##for other branches
 ```
 
 Sometimes `install_github` fails with CA cert error. Try running `httr::set_config(httr::config( ssl_verifypeer = 0L))` before running `install_github`!
