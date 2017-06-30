@@ -199,7 +199,6 @@ qqpf <- function(pval, p=0.90, k=7, add=FALSE, show.fit=FALSE, pch=16, col=1, nh
 ##' @return data.frame with cpg annotations
 ##' @author mvaniterson
 ##' @import FDb.InfiniumMethylation.hg19 org.Hs.eg.db GenomicRanges
-##' @importFrom GenomeInfoDb mapSeqlevels keepSeqlevels renameSeqlevels seqlevels seqlevels<-
 ##' @importFrom AnnotationDbi select
 ##' @export
 cpgInfo <- function(cpgs, TxDb) {
@@ -212,7 +211,7 @@ cpgInfo <- function(cpgs, TxDb) {
     rowRanges <- getPlatform(platform = "HM450", genome = "hg19")
     ##find nearest genes
     gr <- rowRanges[names(rowRanges) %in% cpgs]
-    ##genes[precede(gr, genes)]
+    ##genes[precede(gr, genes)]    
     genes <- genes[nearest(gr, genes)]
 
     ##add gene symbol
@@ -226,17 +225,13 @@ cpgInfo <- function(cpgs, TxDb) {
         id <- match(names(genes), map$ENTREZID)
     }
     mcols(genes)$SYMBOL <- map$SYMBOL[id]
-
-    genes <- keepSeqlevels(genes, unique(as.character(seqnames(genes))))
-    seqlevels(genes) <- mapSeqlevels(as.character(seqlevels(genes)), "NCBI")
-    newnames <- c(23, 24)
-    names(newnames) <- c("X", "Y")
-    genes <- renameSeqlevels(genes, newnames)
-        
+    
     ##reorder
     genes <- as.data.frame(genes, row.names=names(gr))
-    genes <- genes[match(cpgs, rownames(genes)),]
-    genes$seqnames <- as.integer(genes$seqnames)
-    genes[order(genes$seqnames, genes$start),]
+    gr <- as.data.frame(mcols(gr), row.names=names(gr))
+    genes <- merge(genes, gr, by="row.names")
+    rownames(genes) <- genes$Row.names
+    genes <- genes[,-1]    
+    genes[match(cpgs, rownames(genes)),]   
 }
 

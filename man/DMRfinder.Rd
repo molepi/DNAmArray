@@ -57,7 +57,7 @@ head(dmrsD)
 
 dmrsR == dmrsV
 dmrsR == dmrsD
-dmrsV == dmrsD   
+dmrsV == dmrsD
 }
 \author{
 R Sliecker, E.W Lameijer and M. van Iterson

@@ -1,12 +1,11 @@
 ##DMR finder
 .DMR <- function(regions, mismatches, icd){
-  
+
     coord <- start(regions)
     crit <- mcols(regions)$crit
     crit <- crit[order(coord)]
     coord <- coord[order(coord)]
-
-    out <- c()
+   
     MAXIMUM_REGION_LENGTH <- icd
     last_coordinate <- length(regions)
     next_coordinate <- 0 # so that a region that has been called will be skipped
@@ -51,10 +50,15 @@
             }
         }
     }
-    out <- out[order(out[,1]), ]
-    invisible(GRanges(seqnames=unique(as.character(seqnames(regions))),
-                      IRanges(start=out[,1], end=out[,2]),
-                      percentage=out[,3]))
+
+    if(is.null(out))
+        return(NULL)
+    else {
+        out <- out[order(out[,1]), ]
+        return(invisible(GRanges(seqnames=unique(as.character(seqnames(regions))),
+                                 IRanges(start=out[,1], end=out[,2]),
+                                 percentage=out[,3])))
+    }
 }
 
 ##' DMR finder
@@ -70,6 +74,7 @@
 ##' @return GRanges object with DMRs
 ##' @author R Sliecker, E.W Lameijer and M. van Iterson
 ##' @importFrom IRanges IRanges
+##' @importFrom GenomeInfoDb keepSeqlevels
 ##' @export
 ##' @examples
 ##' require(FDb.InfiniumMethylation.hg19)
@@ -91,19 +96,19 @@
 ##' regions <- regions[, c("seqnames", "start", "crit")]
 ##' colnames(regions) <- c("chr", "pos", "crit")
 ##' (dmrsD <- DMRfinder(regions))
-##' 
+##'
 ##' ##all equal
 ##' length(dmrsR)
 ##' length(dmrsV)
 ##' length(dmrsD)
-##' 
+##'
 ##' head(dmrsR)
 ##' head(dmrsV)
 ##' head(dmrsD)
 ##'
 ##' dmrsR == dmrsV
 ##' dmrsR == dmrsD
-##' dmrsV == dmrsD   
+##' dmrsV == dmrsD
 DMRfinder <- function(regions, mismatches=3, icd=1000){
 
     if(is.vector(regions)){
@@ -132,6 +137,6 @@ DMRfinder <- function(regions, mismatches=3, icd=1000){
     regions <- split(regions, seqnames(regions))
 
     ##apply DMRfinder on each chromosome separately
-    out <- lapply(regions, .DMR, mismatches, icd)         
+    out <- lapply(regions, .DMR, mismatches, icd)
     invisible(unlist(GRangesList(out)))
 }
