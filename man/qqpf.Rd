@@ -4,8 +4,8 @@
 \alias{qqpf}
 \title{Printer friendly qq-plot}
 \usage{
-qqpf(pval, p = 0.9, k = 7, add = FALSE, show.fit = FALSE, pch = 16,
-  col = 1, nhighlight = 6, bty = "n", main = "", ...)
+qqpf(pval, p = 0.9, k = 7, add = FALSE, show.fit = FALSE,
+  pch = 16, col = 1, nhighlight = 6, bty = "n", main = "", ...)
 }
 \arguments{
 \item{pval}{vector of p-values}

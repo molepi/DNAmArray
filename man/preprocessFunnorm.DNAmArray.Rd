@@ -4,8 +4,8 @@
 \alias{preprocessFunnorm.DNAmArray}
 \title{preprocessFunnormv2}
 \usage{
-preprocessFunnorm.DNAmArray(rgSet, nPCs = 2, sex = NULL, bgCorr = TRUE,
-  dyeCorr = TRUE, verbose = TRUE, keepCN = TRUE)
+preprocessFunnorm.DNAmArray(rgSet, nPCs = 2, sex = NULL,
+  bgCorr = TRUE, dyeCorr = TRUE, verbose = TRUE, keepCN = TRUE)
 }
 \arguments{
 \item{rgSet}{object of class 'RGChannelSet'}
