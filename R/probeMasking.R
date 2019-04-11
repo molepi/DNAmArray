@@ -19,9 +19,8 @@
 probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"), verbose=TRUE){
   
   testUrl <- substring(gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current"),122,131)
-  cat(testUrl,"\n")
-  if(testUrl != "test"){
-    warning("This function appears to be out-of-date. Please contact the maintainer.")
+  if(testUrl != "Sep-9-2018"){
+    warning("This function appears to be out-of-date. Please contact the maintainer.", immediate.=TRUE)
   }
   
   if(verbose==TRUE) {
