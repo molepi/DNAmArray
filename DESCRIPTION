@@ -13,7 +13,8 @@ Depends: R (>= 3.0),
          FDb.InfiniumMethylation.hg19,
          GenomicRanges,
          minfi (>= 1.22.1),
-         org.Hs.eg.db
+         org.Hs.eg.db,
+         htm2txt
 Imports: AnnotationDbi,
          Biobase,
          BiocParallel,GenomeInfoDb,GenomicFeatures,

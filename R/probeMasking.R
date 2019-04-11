@@ -12,12 +12,13 @@
 #' @param genome hg19 or hg38 as reference
 #' @param verbose default is TRUE
 #' @return beta or M values
+#' @import htm2txt
 #' @export
 #' @author ljsinke
 
 probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"), verbose=TRUE){
   
-  testUrl <- "http://zwdzwd.github.io/InfiniumAnnotation#current"
+  testUrl <- gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current")
   cat(testUrl)
   
   if(verbose==TRUE) {
