@@ -12,10 +12,16 @@
 #' @param genome hg19 or hg38 as reference
 #' @param verbose default is TRUE
 #' @return beta or M values
+#' @import htm2txt
 #' @export
 #' @author ljsinke
 
 probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"), verbose=TRUE){
+  
+  testUrl <- substring(gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current"),122,131)
+  if(testUrl != "Sep-9-2018"){
+    warning("This function appears to be out-of-date. Please contact the maintainer.", immediate.=TRUE)
+  }
   
   if(verbose==TRUE) {
     cat("[probeFilterDNAmArray] Extracting probe filter... \n")
