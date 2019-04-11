@@ -19,7 +19,7 @@
 probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"), verbose=TRUE){
   
   testUrl <- gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current")
-  cat(testUrl)
+  cat(testUrl,"\n")
   
   if(verbose==TRUE) {
     cat("[probeFilterDNAmArray] Extracting probe filter... \n")
