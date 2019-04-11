@@ -18,7 +18,7 @@
 
 probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"), verbose=TRUE){
   
-  testUrl <- gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current")
+  testUrl <- substring(gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current"),122,131)
   cat(testUrl,"\n")
   
   if(verbose==TRUE) {
