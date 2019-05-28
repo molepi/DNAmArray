@@ -15,7 +15,7 @@ screeplot <- function(RGset, nmax=10){
 
     nmax <- ifelse(nmax > nrow(controlMatrix), nrow(controlMatrix), nmax)
     
-    barplot(summary(pc)$importance[2,1:nmax], ylab="Proportion of Variance")
+    barplot(summary(pc)$importance[2,1:nmax], ylab="Proportion of Variance", main="Scree Plot", col="#7cb4c9")
     invisible(pc)
 }
 
