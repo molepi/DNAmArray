@@ -18,7 +18,7 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
 
     ##Filter on number of beads
     if(verbose)
-        message("Calculate and filter on number of beads...")
+        cat("Calculate and filter on number of beads... \n")
 
     beadmat <- getNBeads(RGset)
     
@@ -26,12 +26,12 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
     ##beadmat[idBeadmat] <- NA
 
     if(verbose)
-        message("On average ", round(100*sum(idBeadmat)/prod(dim(idBeadmat)), 2), "% of the probes (", nrow(idBeadmat), ") have number of beads below ", cutbead)
+        cat("On average ", round(100*sum(idBeadmat)/prod(dim(idBeadmat)), 2), "% of the probes (", nrow(idBeadmat), ") have number of beads below ", cutbead, "\n")
 
     ##Filter on Red and Green intensity <1
     if(zeroint) {
         if(verbose)
-            message("Calculate and filter on zero intensities...")
+            cat("Calculate and filter on zero intensities... \n")
 
         Grn <- getGreen(RGset)
         Red <- getRed(RGset)
@@ -47,9 +47,9 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
                          getProbeInfo(RGset, type = "I-Red")$AddressB),] < 1
 
         if(verbose) {
-            message("On average ", round(100*sum(idT2)/prod(dim(idT2)), 3), "% of the Type II probes (", nrow(idT2), ") have Red and/or Green intensity below 1")
-            message("On average ", round(100*sum(idT1Grn)/prod(dim(idT1Grn)), 3), "% of the Type I probes (", nrow(idT1Grn), "), measured in Green channel, have intensity below 1")
-            message("On average ", round(100*sum(idT1Red)/prod(dim(idT1Red)), 3), "% of the Type I probes (", nrow(idT1Red), "), measured in Red channel, have intensity below 1")
+            cat("On average ", round(100*sum(idT2)/prod(dim(idT2)), 3), "% of the Type II probes (", nrow(idT2), ") have Red and/or Green intensity below 1 \n")
+            cat("On average ", round(100*sum(idT1Grn)/prod(dim(idT1Grn)), 3), "% of the Type I probes (", nrow(idT1Grn), "), measured in Green channel, have intensity below 1 \n")
+            cat("On average ", round(100*sum(idT1Red)/prod(dim(idT1Red)), 3), "% of the Type I probes (", nrow(idT1Red), "), measured in Red channel, have intensity below 1 \n")
         }
     }
 
@@ -58,12 +58,12 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
 
     if(zeroint) {
         if(verbose){
-            message("Set filtered probes in Red and/or Green channels to NA...")
+            cat("Set filtered probes in Red and/or Green channels to NA... \n")
         }
 
         for(i in 1:ncol(RGset)) {
             if(verbose & i%%100 == 0)
-                message("... done ", i, " out of ", ncol(RGset), " ...")
+                cat("... done ", i, " out of ", ncol(RGset), " ... \n")
             idRed <- c(names(which(idT2[,i])), names(which(idT1Red[,i])))
             midRed <- match(idRed, rownames(Red))
             Red[midRed, i] <- NA
@@ -109,7 +109,7 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
 
     ##Filter on detection P-value using minfi's detectionP
     if(verbose)
-        message("Calculate and filter on detection P-value...")
+        cat("Calculate and filter on detection P-value... \n")
 
     pvalmat <- detectionP(RGset, na.rm=TRUE)
     idPvalmat <- pvalmat > cutp
@@ -117,10 +117,10 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
     ##pvalmat[idPvalmat] <- NA
 
     if(verbose)
-        message("On average ", round(100*sum(idPvalmat)/prod(dim(idPvalmat)), 2), "% of the CpGs (", nrow(idPvalmat), ") have detection P-value above the threshold ", cutp)
+        cat("On average ", round(100*sum(idPvalmat)/prod(dim(idPvalmat)), 2), "% of the CpGs (", nrow(idPvalmat), ") have detection P-value above the threshold ", cutp, "\n")
 
     if(verbose)
-        message("Transform to ", what,"-values...")
+        cat("Transform to ", what,"-values... \n")
 
     if(what == "M"){
         matfilt <- getM(preprocessRaw(RGset), ...)
@@ -133,7 +133,7 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
 
     ##set max/min M-values to +/- 16
     if(verbose & what=="M")
-        message("Set +/-Inf to +/-16...")
+        cat("Set +/-Inf to +/-16... \n")
     
     if(what == "M")
         matnorm[!is.finite(matnorm)] <-  sign(matnorm[!is.finite(matnorm)])*16
@@ -141,7 +141,7 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
     ##set NA from probeFiltering
     ##!!!NOTE orders are not the same
     if(verbose)
-         message("On average ", round(100*sum(is.na(matfilt))/prod(dim(matfilt)), 2), "% of the probes (", nrow(matfilt), ") were set to NA in the probe filtering step!")
+         cat("On average ", round(100*sum(is.na(matfilt))/prod(dim(matfilt)), 2), "% of the probes (", nrow(matfilt), ") were set to NA in the probe filtering step! \n")
     mid <- match(rownames(matfilt), rownames(matnorm))
     matnorm <- matnorm[mid,]
     matnorm[is.na(matfilt)] <- NA
@@ -162,15 +162,15 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
 
     ##calculate success rates and reduce
     if(verbose)
-        message("Calculate success rates and reduce...")
+        cat("Calculate success rates and reduce... \n")
     
     ##srCols <- apply(matnorm, 2, function(x) sum(!is.na(x))/(length(x) - 30969)) ##chen CpGs excluded
     srCols <- apply(matnorm, 2, function(x) sum(!is.na(x))/(length(x)))
     srRows <- apply(matnorm, 1, function(x) sum(!is.na(x))/length(x))
 
     if(verbose){
-        message("Percentage of samples having success rate above ", cutsamples, " is ", round(100*sum(srCols > cutsamples)/length(srCols),2), "%")
-        message("Percentage of CpGs having success rate above ", cutcpgs, " is ", round(100*sum(srRows > cutcpgs)/length(srRows),2), "%")
+        cat("Percentage of samples having success rate above ", cutsamples, " is ", round(100*sum(srCols > cutsamples)/length(srCols),2), "% \n")
+        cat("Percentage of CpGs having success rate above ", cutcpgs, " is ", round(100*sum(srRows > cutcpgs)/length(srRows),2), "% \n")
     }
     invisible(matnorm[srRows > cutcpgs,  srCols > cutsamples])
 }
