@@ -117,10 +117,10 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
     ##pvalmat[idPvalmat] <- NA
 
     if(verbose)
-        cat("On average ", round(100*sum(idPvalmat)/prod(dim(idPvalmat)), 2), "% of the CpGs (", nrow(idPvalmat), ") have detection P-value above the threshold ", cutp, "\n")
+        cat("On average", round(100*sum(idPvalmat)/prod(dim(idPvalmat)), 2),"% of the CpGs (",nrow(idPvalmat),") have detection P-value above the threshold ",cutp, "\n")
 
     if(verbose)
-        cat("Transform to ", what,"-values... \n")
+        cat("Transform to ",what,"-values... \n")
 
     if(what == "M"){
         matfilt <- getM(preprocessRaw(RGset), ...)
@@ -141,7 +141,7 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
     ##set NA from probeFiltering
     ##!!!NOTE orders are not the same
     if(verbose)
-         cat("On average ", round(100*sum(is.na(matfilt))/prod(dim(matfilt)), 2), "% of the probes (", nrow(matfilt), ") were set to NA in the probe filtering step! \n")
+         cat("On average", round(100*sum(is.na(matfilt))/prod(dim(matfilt)), 2),"% of the probes (",nrow(matfilt),") were set to NA in the probe filtering step! \n")
     mid <- match(rownames(matfilt), rownames(matnorm))
     matnorm <- matnorm[mid,]
     matnorm[is.na(matfilt)] <- NA
@@ -169,8 +169,8 @@ reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95
     srRows <- apply(matnorm, 1, function(x) sum(!is.na(x))/length(x))
 
     if(verbose){
-        cat("Percentage of samples having success rate above ", cutsamples, " is ", round(100*sum(srCols > cutsamples)/length(srCols),2), "% \n")
-        cat("Percentage of CpGs having success rate above ", cutcpgs, " is ", round(100*sum(srRows > cutcpgs)/length(srRows),2), "% \n")
+        cat("Percentage of samples having success rate above", cutsamples, "is", round(100*sum(srCols > cutsamples)/length(srCols),2),"% \n")
+        cat("Percentage of CpGs having success rate above", cutcpgs, "is", round(100*sum(srRows > cutcpgs)/length(srRows),2),"% \n")
     }
     invisible(matnorm[srRows > cutcpgs,  srCols > cutsamples])
 }
