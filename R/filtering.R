@@ -18,7 +18,7 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
 
     ##Filter on number of beads
     if(verbose)
-        cat("Calculate and filter on number of beads... \n")
+        cat("Filtering on number of beads... \n")
 
     beadmat <- getNBeads(RGset)
     
@@ -26,12 +26,12 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
     ##beadmat[idBeadmat] <- NA
 
     if(verbose)
-        cat("On average ", round(100*sum(idBeadmat)/prod(dim(idBeadmat)), 2), "% of the probes (", nrow(idBeadmat), ") have number of beads below ", cutbead, "\n")
+        cat("On average", round(100*sum(idBeadmat)/prod(dim(idBeadmat)), 2),"% of the probes (",nrow(idBeadmat),") have number of beads below", cutbead, "\n")
 
     ##Filter on Red and Green intensity <1
     if(zeroint) {
         if(verbose)
-            cat("Calculate and filter on zero intensities... \n")
+            cat("Filtering on zero intensities... \n")
 
         Grn <- getGreen(RGset)
         Red <- getRed(RGset)
@@ -47,9 +47,9 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
                          getProbeInfo(RGset, type = "I-Red")$AddressB),] < 1
 
         if(verbose) {
-            cat("On average ", round(100*sum(idT2)/prod(dim(idT2)), 3), "% of the Type II probes (", nrow(idT2), ") have Red and/or Green intensity below 1 \n")
-            cat("On average ", round(100*sum(idT1Grn)/prod(dim(idT1Grn)), 3), "% of the Type I probes (", nrow(idT1Grn), "), measured in Green channel, have intensity below 1 \n")
-            cat("On average ", round(100*sum(idT1Red)/prod(dim(idT1Red)), 3), "% of the Type I probes (", nrow(idT1Red), "), measured in Red channel, have intensity below 1 \n")
+            cat("On average", round(100*sum(idT2)/prod(dim(idT2)), 3),"% of the Type II probes (",nrow(idT2),") have Red and/or Green intensity below 1 \n")
+            cat("On average", round(100*sum(idT1Grn)/prod(dim(idT1Grn)), 3),"% of the Type I probes (",nrow(idT1Grn),"), measured in Green channel, have intensity below 1 \n")
+            cat("On average", round(100*sum(idT1Red)/prod(dim(idT1Red)), 3),"% of the Type I probes (",nrow(idT1Red),"), measured in Red channel, have intensity below 1 \n")
         }
     }
 
@@ -63,7 +63,7 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
 
         for(i in 1:ncol(RGset)) {
             if(verbose & i%%100 == 0)
-                cat("... done ", i, " out of ", ncol(RGset), " ... \n")
+                cat("... done ",i," out of ",ncol(RGset)," ... \n")
             idRed <- c(names(which(idT2[,i])), names(which(idT1Red[,i])))
             midRed <- match(idRed, rownames(Red))
             Red[midRed, i] <- NA
