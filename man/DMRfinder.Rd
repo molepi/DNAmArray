@@ -4,61 +4,33 @@
 \alias{DMRfinder}
 \title{DMR finder}
 \usage{
-DMRfinder(regions, mismatches = 3, icd = 1000)
+DMRfinder(data, chromosome = c(1:22, "X", "Y"), mismatches = 3,
+  icd = 1000, illumina = TRUE)
 }
 \arguments{
-\item{regions}{GRanges-object, named vector or matrix/data.frame}
+\item{mismatches}{Number of non-significant DMPs allowed (default: 3)}
 
-\item{mismatches}{number of non-significant DMPs default <= 3}
+\item{icd}{Inter-CpG distance (default: 1000bp)}
 
-\item{icd}{inter-CpG distance default 1000bp}
+\item{regions}{GRanges-class object, named vector, matrix, or data.frame}
 }
 \value{
-GRanges object with DMRs
+GRanges-class object containing DMRs
 }
 \description{
 DMR finder
 }
 \details{
-Algorithm is described in Identification and systematic annotation
-of tissue-specific differentially methylated regions using the
-Illumina 450k array Slieker et al. Epigentics and Chromatin 2013,
-6,26.
+Algorithm to identify differentially methylated regions (DMRs)
+from a list of differentially methylated probes (DMPs). This was
+developed by Roderick Slieker and is described in "Identification 
+and systematic annotation of tissue-specific differentially methylated 
+regions using the Illumina 450k array" Slieker et al. (2013)
 }
 \examples{
-require(FDb.InfiniumMethylation.hg19)
-feats <- features(FDb.InfiniumMethylation.hg19)
-regions <- feats[seqnames(feats) \%in\% c("chr21", "chr22")]
-mcols(regions)  <- NULL ##drop unnecessary metadata
-mcols(regions)$crit <- rbinom(length(regions), 1, prob=0.2)
-
-##input GRanges
-(dmrsR <- DMRfinder(regions))
-
-##input named-vector
-dmps <- mcols(regions)$crit
-names(dmps) <- names(regions)
-(dmrsV <- DMRfinder(dmps))
-
-##bed-like data.frame
-regions <- as.data.frame(regions)
-regions <- regions[, c("seqnames", "start", "crit")]
-colnames(regions) <- c("chr", "pos", "crit")
-(dmrsD <- DMRfinder(regions))
-
-##all equal
-length(dmrsR)
-length(dmrsV)
-length(dmrsD)
-
-head(dmrsR)
-head(dmrsV)
-head(dmrsD)
-
-dmrsR == dmrsV
-dmrsR == dmrsD
-dmrsV == dmrsD
+dmrData <- data.frame(dmp = attr(padj.cate, "names"), crit = ifelse(padj.cate<0.05, 1, 0))
+DMRs <- DMRfinder(dmrData, mismatches=3, icd=1000)
 }
 \author{
-R Sliecker, E.W Lameijer and M. van Iterson
+R Sliecker, E.W Lameijer, and M. van Iterson
 }
