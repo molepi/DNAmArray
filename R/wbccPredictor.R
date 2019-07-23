@@ -83,13 +83,13 @@ predict_wbcc <- function(pred, data, covar, transformation=function(x) x, ncomp=
   else
     stop(paste("This function is not designed for a", class(pred), "class of predictor."))
   
-  covaNames <- gsub("covar", "", grep("covar", names, value=TRUE))
-  dataNames <- gsub("data", "", grep("data", names, value=TRUE))
-  
-  matchID <- match(covaNames, colnames(covar))
-  if(any(is.na(matchID)))
-    stop("Covariates in the same do not match those in the predictor.")
-  covar <- covar[ , matchID]
+  # covaNames <- gsub("covar", "", grep("covar", names, value=TRUE))
+  # dataNames <- gsub("data", "", grep("data", names, value=TRUE))
+  # 
+  # matchID <- match(covaNames, colnames(covar))
+  # if(any(is.na(matchID)))
+  #   stop("Covariates in the same do not match those in the predictor.")
+  # covar <- covar[ , matchID]
   
   if(any(is.na(covar)) & !impute) {
     stop("Missing values are not allowed in the covariates if imputation is not specified.")
@@ -102,10 +102,10 @@ predict_wbcc <- function(pred, data, covar, transformation=function(x) x, ncomp=
       x})
   }
   
-  matchID <- match(dataNames, rownames(data))
-  if(any(is.na(matchID)))
-    warning("Row names of the sample do not match those of the predictor.")
-  data <- data[matchID, ]
+  # matchID <- match(dataNames, rownames(data))
+  # if(any(is.na(matchID)))
+  #   warning("Row names of the sample do not match those of the predictor.")
+  # data <- data[matchID, ]
   if(any(is.na(data)) & !impute) {
     stop("Missing values are not allowed in the data if imputation is not specified")
   } 
