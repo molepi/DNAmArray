@@ -18,7 +18,7 @@ read.metharray.exp.par <- function(targets, verbose = TRUE, ...) {
     if (nworkers <= 1)
         stop("Did you registered a biocparallel back-end?")
     y <- rep(1, ceiling(nrow(targets)/nworkers))
-    for (i in 2:workers) y <- c(y, rep(i, ceiling(nrow(targets)/nworkers)))
+    for (i in 2:nworkers) y <- c(y, rep(i, ceiling(nrow(targets)/nworkers)))
     y <- y[1:nrow(targets)]
     jobs <- split(targets, y)
 
