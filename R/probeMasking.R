@@ -41,18 +41,18 @@ probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"),
     maskProbes <- DNAmArray::mask450Khg38
   }
   
-  maskProbes <- maskProbes[maskProbes$MASK_general]
+  maskProbes <- names(maskProbes[maskProbes$MASK_general])
   
   if(verbose==TRUE) {
     numMask <- length(maskProbes)
-    cat("[probeFilterDNAmArray]", numMask, "probes considered for filtering... \n")
+    cat("[DNAmArray]", numMask, "probes considered for filtering... \n")
   }
   
   values <- values[!(rownames(values) %in% maskProbes),]
   
   if(verbose==TRUE) {
     numGone <- numValues - nrow(values)
-    cat("[probeFilterDNAmArray]", numGone,"/",numValues, "probes removed from the dataset \n")
+    cat("[DNAmArray]", numGone,"/",numValues, "probes removed from the dataset \n")
   }
   return(values)
 }
