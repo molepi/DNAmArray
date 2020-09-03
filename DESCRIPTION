@@ -2,21 +2,22 @@ Package: DNAmArray
 Title: Streamlined workflow for the quality control, normalization and
        bias-free analysis of Illumina methylation array data - The Leiden
        approach
-Version: 0.1.1
-Author: Maarten van Iterson, Elmar Tobi, Roderick Slieker, Koen Dekkers, 
-    Wouter den Hollander, Rene Luijk, Lucy Sinke, and Bas Heijmans
+Version: 1.0.0
+Author: Lucy Sinke, Maarten van Iterson, Davy Cats, BIOS Consortium, 
+        Roderick Slieker, and Bas Heijmans
 Maintainer: Lucy Sinke <l.j.sinke@lumc.nl>
 Description: Streamlined workflow for the quality control, normalization and
 	bias-free analysis of Illumina methylation array data - The Leiden approach.
 Depends: R (>= 3.0),
-         FDb.InfiniumMethylation.hg19,
          GenomicRanges,
          minfi (>= 1.22.1),
          org.Hs.eg.db,
          htm2txt
 Imports: AnnotationDbi,
          Biobase,
-         BiocParallel,GenomeInfoDb,GenomicFeatures,
+         BiocParallel,
+         GenomeInfoDb,
+         GenomicFeatures,
          IRanges,
          SummarizedExperiment,	 
          graphics,

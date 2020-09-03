@@ -18,8 +18,8 @@
 
 probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"), verbose=TRUE){
   
-  testUrl <- substring(gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current"),122,131)
-  if(testUrl != "Sep-9-2018"){
+  testUrl <- substring(gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current"),121,130)
+  if(testUrl != "Jul-4-2020"){
     warning("This function appears to be out-of-date. Please contact the maintainer.", immediate.=TRUE)
   }
   
@@ -40,6 +40,8 @@ probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"),
   if(array=="450" & genome=="hg38") {
     maskProbes <- DNAmArray::mask450Khg38
   }
+  
+  maskProbes <- maskProbes[maskProbes$MASK_general]
   
   if(verbose==TRUE) {
     numMask <- length(maskProbes)
