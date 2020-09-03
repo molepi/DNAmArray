@@ -8,7 +8,7 @@ Author: Lucy Sinke, Maarten van Iterson, Davy Cats, BIOS Consortium,
 Maintainer: Lucy Sinke <l.j.sinke@lumc.nl>
 Description: Streamlined workflow for the quality control, normalization and
 	bias-free analysis of Illumina methylation array data - The Leiden approach.
-Depends: R (>= 3.0),
+Depends: R (>= 4.0.0),
          GenomicRanges,
          minfi (>= 1.22.1),
          org.Hs.eg.db,
