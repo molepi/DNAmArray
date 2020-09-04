@@ -91,18 +91,31 @@ detectionP <- function(rgSet, type = "m+u", na.rm=FALSE) {
 ##' @param beta beta matrix
 ##' @param cutbeta beta values threshold use values between [0.2-0.6]
 ##' @param nx number of X chr probes to determine sex is Male default 3000
+##' @param array EPIC or 450K
+##' @param genome hg19 or hg38
 ##' @return sex prediction
-##' @author rcslieker
-##' @import FDb.InfiniumMethylation.hg19
-##' @importFrom GenomicFeatures features
+##' @author ljsinke
 ##' @export 
-getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000){
-    InfMet <- features(FDb.InfiniumMethylation.hg19)    
-    chrX <- names(InfMet[as.vector(seqnames(InfMet)) %in% "chrX"])    
-    chrX <- chrX[grep("cg", chrX)]
-    BetaX <- beta[match(chrX, rownames(beta)),]
-    nopoX <- colSums(BetaX >= cutbeta[1] & BetaX <= cutbeta[2], na.rm=TRUE)
-    ifelse(nopoX <= 3000, "Male", "Female")
+getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array, genome = 'hg19'){
+  if(array=="EPIC" & genome=="hg19") {
+    maskProbes <- DNAmArray::maskEPIChg19
+  }
+  if(array=="EPIC" & genome=="hg38") {
+    maskProbes <- DNAmArray::maskEPIChg38
+  }
+  if(array=="450" & genome=="hg19") {
+    maskProbes <- DNAmArray::mask450Khg19
+  }
+  if(array=="450" & genome=="hg38") {
+    maskProbes <- DNAmArray::mask450Khg38
+  } 
+  
+  chrX <- names(mask450Khg19[seqnames(mask450Khg19) %in% 'chrX'])
+  chrX <- chrX[grep("cg", chrX)]
+  
+  betaX <- beta[match(chrX, rownames(beta)),]
+  nopoX <- colSums(betaX >= cutbeta[1] & betaX <= cutbeta[2], na.rm=TRUE)
+  ifelse(nopoX <= 3000, "Male", "Female")
 }
 
 ##' Printer friendly qq-plot
