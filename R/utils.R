@@ -96,17 +96,17 @@ detectionP <- function(rgSet, type = "m+u", na.rm=FALSE) {
 ##' @return sex prediction
 ##' @author ljsinke
 ##' @export 
-getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array, genome = 'hg19'){
+getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array = '450K', genome = 'hg19'){
   if(array=="EPIC" & genome=="hg19") {
     maskProbes <- DNAmArray::maskEPIChg19
   }
   if(array=="EPIC" & genome=="hg38") {
     maskProbes <- DNAmArray::maskEPIChg38
   }
-  if(array=="450" & genome=="hg19") {
+  if(array=="450K" & genome=="hg19") {
     maskProbes <- DNAmArray::mask450Khg19
   }
-  if(array=="450" & genome=="hg38") {
+  if(array=="450K" & genome=="hg38") {
     maskProbes <- DNAmArray::mask450Khg38
   } 
   
