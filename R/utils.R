@@ -110,12 +110,14 @@ getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array = '450K
     maskProbes <- DNAmArray::mask450Khg38
   } 
   
-  chrX <- names(mask450Khg19[seqnames(mask450Khg19) %in% 'chrX'])
+  chrX <- names(maskProbes[seqnames(maskProbes) %in% 'chrX'])
   chrX <- chrX[grep("cg", chrX)]
   
-  betaX <- beta[match(chrX, rownames(beta)),]
+  betaX <- betas[rownames(betas) %in% chrX,]
+  betaX <- assay(betaX)
+  
   nopoX <- colSums(betaX >= cutbeta[1] & betaX <= cutbeta[2], na.rm=TRUE)
-  ifelse(nopoX <= 3000, "Male", "Female")
+  ifelse(nopoX <= nx, "Male", "Female")
 }
 
 ##' Printer friendly qq-plot
