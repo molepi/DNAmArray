@@ -68,7 +68,7 @@ predict_wbcc <- function(pred, data, covar, transformation=function(x) x, ncomp=
     stop("Both data and covariates must be provided.")
   if(ncol(data) != nrow(covar))                    # Check dimensions
     stop("Data column number must match covariate row number.")
-  if(!all.equal(colnames(data), rownames(covar)))  # Check same names
+  if(!isTRUE(all.equal(colnames(data), rownames(covar))))  # Check same names
     stop("Data column names must match covariate row names.")
   
   matchID <- match(rownames(covar), colnames(data))
