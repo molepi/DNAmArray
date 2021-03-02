@@ -35,7 +35,7 @@ read.metharray.exp.par <- function(targets, verbose = TRUE, ...) {
         message(str(res))
     message("Combining the RGsets to one big RGset")
     rgSet <- res[[1]]
-    for (i in 2:nworkers) rgSet <- combine(rgSet, res[[i]])
+    for (i in 2:length(res)) rgSet <- combine(rgSet, res[[i]])
     rgSet
 }
 
