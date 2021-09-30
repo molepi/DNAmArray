@@ -10,7 +10,8 @@ Description: Streamlined workflow for the quality control, normalization and
 	bias-free analysis of Illumina methylation array data - The Leiden approach.
 Depends: R (>= 4.0.0),
          minfi (>= 1.22.1),
-         FDb.InfiniumMethylation.hg19
+         FDb.InfiniumMethylation.hg19,
+	 pls
 Imports: AnnotationDbi,
          Biobase,
          BiocParallel,
@@ -26,7 +27,6 @@ Imports: AnnotationDbi,
          htm2txt,
          readr,
          ggplot2,
-         pls,
          reshape2
 License: GPL (>= 2)
 Encoding: UTF-8
