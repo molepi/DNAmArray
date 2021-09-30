@@ -39,52 +39,6 @@ read.metharray.exp.par <- function(targets, verbose = TRUE, ...) {
     rgSet
 }
 
-##' detectionP that accepts NA's
-##'
-##' since probe-filtering can introduce NA's
-##' detectionP is modified to handle NA's properly
-##' beware the P-value matrix thus can contain NA's
-##' @title detectionP that accepts NA's
-##' @param rgSet RGset
-##' @param type "m+u"
-##' @param na.rm FALSE/TRUE
-##' @return matrix with detection P-values
-##' @author mvaniterson
-##' @importFrom matrixStats colMedians colMads
-##' @importFrom stats pnorm
-detectionP <- function(rgSet, type = "m+u", na.rm=FALSE) {
-    locusNames <- getManifestInfo(rgSet, "locusNames")
-    detP <- matrix(NA_real_, ncol = ncol(rgSet), nrow = length(locusNames),
-                   dimnames = list(locusNames, sampleNames(rgSet)))
-
-    controlIdx <- getControlAddress(rgSet, controlType = "NEGATIVE")
-    r <- getRed(rgSet)
-    rBg <- r[controlIdx,]
-    rMu <- matrixStats::colMedians(rBg, na.rm=na.rm)
-    rSd <- matrixStats::colMads(rBg, na.rm=na.rm)
-
-    g <- getGreen(rgSet)
-    gBg <- g[controlIdx,]
-    gMu <- matrixStats::colMedians(gBg, na.rm=na.rm)
-    gSd <- matrixStats::colMads(gBg, na.rm=na.rm)
-
-    TypeII <- getProbeInfo(rgSet, type = "II")
-    TypeI.Red <- getProbeInfo(rgSet, type = "I-Red")
-    TypeI.Green <- getProbeInfo(rgSet, type = "I-Green")
-    for (i in 1:ncol(rgSet)) {
-        ## Type I Red
-        intensity <- r[TypeI.Red$AddressA, i] + r[TypeI.Red$AddressB, i]
-        detP[TypeI.Red$Name, i] <- 1-pnorm(intensity, mean=rMu[i]*2, sd=rSd[i]*2)
-        ## Type I Green
-        intensity <- g[TypeI.Green$AddressA, i] + g[TypeI.Green$AddressB, i]
-        detP[TypeI.Green$Name, i] <- 1-pnorm(intensity, mean=gMu[i]*2, sd=gSd[i]*2)
-        ## Type II
-        intensity <- r[TypeII$AddressA, i] + g[TypeII$AddressA, i]
-        detP[TypeII$Name, i] <- 1-pnorm(intensity, mean=rMu[i]+gMu[i], sd=rSd[i]+gSd[i])
-    }
-    detP
-}
-
 ##' Determine sex based on X chr methylation status
 ##'
 ##' @title Determine sex based on X chr methylation status
@@ -95,120 +49,35 @@ detectionP <- function(rgSet, type = "m+u", na.rm=FALSE) {
 ##' @param genome hg19 or hg38
 ##' @return sex prediction
 ##' @author ljsinke
+##' @importFrom readr read_tsv
 ##' @export 
 getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array = '450K', genome = 'hg19'){
   if(array=="EPIC" & genome=="hg19") {
-    maskProbes <- DNAmArray::maskEPIChg19
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg19.manifest.txt.gz"))
   }
   if(array=="EPIC" & genome=="hg38") {
-    maskProbes <- DNAmArray::maskEPIChg38
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg38.manifest.txt.gz"))
   }
   if(array=="450K" & genome=="hg19") {
-    maskProbes <- DNAmArray::mask450Khg19
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg19.manifest.txt.gz"))
   }
   if(array=="450K" & genome=="hg38") {
-    maskProbes <- DNAmArray::mask450Khg38
-  } 
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg38.manifest.txt.gz"))
+  }
   
   chrX <- names(maskProbes[seqnames(maskProbes) %in% 'chrX'])
   chrX <- chrX[grep("cg", chrX)]
   
-  betaX <- betas[rownames(betas) %in% chrX,]
+  betaX <- beta[rownames(beta) %in% chrX,]
   betaX <- assay(betaX)
   
   nopoX <- colSums(betaX >= cutbeta[1] & betaX <= cutbeta[2], na.rm=TRUE)
   ifelse(nopoX <= nx, "Male", "Female")
 }
 
-##' Printer friendly qq-plot
+##' find gene nearest to list of cpgs
 ##'
-##' Use interpolation on the 'uninteresting' P-values to reduce the number
-##' of points that are drawn.
-##' @title Printer friendly qq-plot
-##' @param pval vector of p-values
-##' @param p proportion that should be interpolated
-##' @param k number of points used to interpolate
-##' @param add add qq-plot to existing qq-plot
-##' @param show.fit show the interpolation fit
-##' @param pch default plot pars
-##' @param col default plot pars
-##' @param nhighlight number of highlighted points
-##' @param bty default plot pars
-##' @param main default plot pars
-##' @param ... additional graphical parameters
-##' @return plot
-##' @author mvaniterson
-##' @export
-##' @importFrom stats quantile rexp splinefun pnorm prcomp
-##' @importFrom graphics abline barplot curve plot points text
-qqpf <- function(pval, p=0.90, k=7, add=FALSE, show.fit=FALSE, pch=16, col=1, nhighlight=6, bty="n", main="", ...) {
-
-    lbs <- names(pval)
-    pval <- pval[!is.na(pval) & !is.nan(pval) & !is.null(pval) & is.finite(pval) & pval < 1 & pval >= 0]
-
-    pval[pval == 0] <- min(pval[pval>0])/10
-
-    y <- sort(-log10(pval))
-    lbs <- lbs[order(-log10(pval))]
-
-    set.seed(12345) ##
-    x <- sort(rexp(length(pval), log(10)))
-
-    inputArgs <- list(...)
-
-    if(any(names(inputArgs) == "ylim"))
-        ylim <- inputArgs[["ylim"]]
-    else
-        ylim <- range(y)
-
-    if(any(names(inputArgs) == "xlim"))
-        xlim <- inputArgs[["xlim"]]
-    else
-        xlim <- range(x)
-
-    id <- y < quantile(y, prob=p)
-    xid <- x[id][seq(1, sum(id), (sum(id) - 1)/k)]
-    yid <- y[id][seq(1, sum(id), (sum(id) - 1)/k)]
-    f <- splinefun(xid, yid, method="natural")
-
-    highlight <- function(x, y, lbs, nhighlight, col, cex=0.5){
-        id <- order(y, decreasing=TRUE)[1:nhighlight]
-        text(x[id]-1.2, y[id], lbs[id], col=col, cex=cex)
-        ##arrows(x[id]-.2, y[id], x[id], y[id], length=0, col=col, cex=0.5)
-    }
-
-    if(add) {
-        points(x[!id], y[!id], pch=pch, col=col)
-        if(nhighlight>0)
-            highlight(x[!id], y[!id], lbs[!id], nhighlight, col=col)
-        curve(expr=f, add=TRUE, xlim=range(x[id]), lwd=7, col=col)
-    }
-    else {
-        if(!show.fit) {
-            plot(x[!id], y[!id], xlim=xlim, ylim=ylim,
-                 xlab = expression(Expected ~ ~-log[10](italic(p))),
-                 ylab = expression(Observed ~ ~-log[10](italic(p))),
-                 pch=pch, col=col, bty=bty, main=main)
-            if(nhighlight>0)
-                highlight(x[!id], y[!id], lbs[!id], nhighlight, col=col)
-            curve(expr=f, add=TRUE, xlim=range(x[id]), lwd=7, col=col)
-            abline(0, 1, col=1, lty=1)
-        }
-        else {
-            plot(x, y, xlim=range(x), ylim=range(y),
-                 xlab="Theoretical (exp(ln10))", ylab="Observed (-log10(P-values))",
-                 pch=pch, col=col, bty=bty, main=main)
-            if(nhighlight>0)
-                highlight(x, y, lbs, nhighlight)
-            curve(expr=f, add=TRUE, xlim=range(x[id]), lwd=1, col=2)
-            abline(0, 1, col=1, lty=1)
-        }
-    }
-}
-
-##' find gene nearest to list fo cpgs
-##'
-##' find gene nearest to list fo cpgs
+##' find gene nearest to list of cpgs
 ##' @title nearestGenes
 ##' @param cpgs list of illumina cpg identifiers
 ##' @param TxDb name of Transcript database, i.e. TxDb.Hsapiens.UCSC.hg19.knownGene
@@ -251,3 +120,47 @@ cpgInfo <- function(cpgs, TxDb) {
     genes[match(cpgs, rownames(genes)),]   
 }
 
+##' detectionP that accepts NA's
+##'
+##' since probe-filtering can introduce NA's
+##' detectionP is modified to handle NA's properly
+##' beware the P-value matrix thus can contain NA's
+##' @title detectionP that accepts NA's
+##' @param rgSet RGset
+##' @param type "m+u"
+##' @param na.rm FALSE/TRUE
+##' @return matrix with detection P-values
+##' @author mvaniterson
+##' @importFrom stats pnorm median mad
+detectionP <- function(rgSet, type = "m+u", na.rm=FALSE) {
+  locusNames <- getManifestInfo(rgSet, "locusNames")
+  detP <- matrix(NA_real_, ncol = ncol(rgSet), nrow = length(locusNames),
+                 dimnames = list(locusNames, sampleNames(rgSet)))
+  
+  controlIdx <- getControlAddress(rgSet, controlType = "NEGATIVE")
+  r <- getRed(rgSet)
+  rBg <- r[controlIdx,]
+  rMu <- apply(rBg, 2, median, na.rm=na.rm)
+  rSd <- apply(rBg, 2, mad, na.rm=na.rm)
+  
+  g <- getGreen(rgSet)
+  gBg <- g[controlIdx,]
+  gMu <- apply(gBg, 2, median, na.rm=na.rm)
+  gSd <- apply(gBg, 2, mad, na.rm=na.rm)
+  
+  TypeII <- getProbeInfo(rgSet, type = "II")
+  TypeI.Red <- getProbeInfo(rgSet, type = "I-Red")
+  TypeI.Green <- getProbeInfo(rgSet, type = "I-Green")
+  for (i in 1:ncol(rgSet)) {
+    ## Type I Red
+    intensity <- r[TypeI.Red$AddressA, i] + r[TypeI.Red$AddressB, i]
+    detP[TypeI.Red$Name, i] <- 1-pnorm(intensity, mean=rMu[i]*2, sd=rSd[i]*2)
+    ## Type I Green
+    intensity <- g[TypeI.Green$AddressA, i] + g[TypeI.Green$AddressB, i]
+    detP[TypeI.Green$Name, i] <- 1-pnorm(intensity, mean=gMu[i]*2, sd=gSd[i]*2)
+    ## Type II
+    intensity <- r[TypeII$AddressA, i] + g[TypeII$AddressA, i]
+    detP[TypeII$Name, i] <- 1-pnorm(intensity, mean=rMu[i]+gMu[i], sd=rSd[i]+gSd[i])
+  }
+  detP
+}

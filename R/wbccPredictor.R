@@ -61,6 +61,7 @@ train_wbcc <- function(data, covar, cellPer, model=formula(cellPer ~ covar + dat
 ##' @author mvaniterson, lsinke
 ##' @export
 ##' @import pls
+##' @importFrom stats coef median formula
 
 predict_wbcc <- function(pred, data, covar, transformation=function(x) x, ncomp=NULL, impute=TRUE, ...) {
   
@@ -77,7 +78,7 @@ predict_wbcc <- function(pred, data, covar, transformation=function(x) x, ncomp=
   covar <- covar[matchID, ]
   
   if(class(pred) == "mvr")
-    names <- dimnames(coefficients(pred))[[1]]
+    names <- dimnames(coef(pred))[[1]]
   else if(class(pred) == "matrix")
     names <- rownames(pred)
   else
@@ -134,11 +135,13 @@ predict_wbcc <- function(pred, data, covar, transformation=function(x) x, ncomp=
 ##' @title Validation plots
 ##' @param measured Measured cell percentages
 ##' @param predicted Cell percentages predicted by the model
+##' @param ... Additional parameters for plsr see ?plsr
 ##' @return Correlation plots for measured and predicted cell percentages
 ##' @author ljsinke
 ##' @export
-##' @importFrom ggplot2 ggplot
+##' @importFrom ggplot2 ggplot aes geom_point geom_smooth facet_wrap
 ##' @importFrom reshape2 melt
+##' @importFrom stats cor
 
 plot_wbcc <- function(measured, predicted, ...)
 { 
@@ -149,7 +152,7 @@ plot_wbcc <- function(measured, predicted, ...)
   }
   
   predicted <- melt(predicted)
-  measured <- melt(testCellPer)
+  measured <- melt(measured)
   
   ggFrame <- data.frame(predicted = predicted[, 3], measured = measured[, 3], type = predicted[, 2])
   

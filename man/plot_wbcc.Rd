@@ -10,6 +10,8 @@ plot_wbcc(measured, predicted, ...)
 \item{measured}{Measured cell percentages}
 
 \item{predicted}{Cell percentages predicted by the model}
+
+\item{...}{Additional parameters for plsr see ?plsr}
 }
 \value{
 Correlation plots for measured and predicted cell percentages

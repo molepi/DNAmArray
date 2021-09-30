@@ -16,7 +16,7 @@
 #' @export
 #' @author ljsinke
 
-probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"), verbose=TRUE){
+probeMasking <- function(values, array=c("EPIC","450K"), genome=c("hg19","hg38"), verbose=TRUE){
   
   # testUrl <- substring(gettxt("http://zwdzwd.github.io/InfiniumAnnotation#current"),121,130)
   # if(testUrl != "Jul-4-2020"){
@@ -29,16 +29,16 @@ probeMasking <- function(values, array=c("EPIC","450"), genome=c("hg19","hg38"),
   }
   
   if(array=="EPIC" & genome=="hg19") {
-    maskProbes <- DNAmArray::maskEPIChg19
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg19.manifest.txt.gz"))
   }
   if(array=="EPIC" & genome=="hg38") {
-    maskProbes <- DNAmArray::maskEPIChg38
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg38.manifest.txt.gz"))
   }
-  if(array=="450" & genome=="hg19") {
-    maskProbes <- DNAmArray::mask450Khg19
+  if(array=="450K" & genome=="hg19") {
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg19.manifest.txt.gz"))
   }
-  if(array=="450" & genome=="hg38") {
-    maskProbes <- DNAmArray::mask450Khg38
+  if(array=="450K" & genome=="hg38") {
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg38.manifest.txt.gz"))
   }
   
   maskProbes <- names(maskProbes[maskProbes$MASK_general])

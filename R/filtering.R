@@ -10,6 +10,7 @@
 ##' @author mvaniterson
 ##' @export
 ##' @import minfi
+##' @importFrom SummarizedExperiment colData
 ##' @importFrom Biobase varMetadata AnnotatedDataFrame phenoData featureData experimentData annotation protocolData assayDataElement
 probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
 

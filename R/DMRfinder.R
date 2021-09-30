@@ -6,17 +6,19 @@
 ##' and systematic annotation of tissue-specific differentially methylated 
 ##' regions using the Illumina 450k array" Slieker et al. (2013)
 ##' @title DMR finder
-##' @param regions GRanges-class object, named vector, matrix, or data.frame
+##' @param data GRanges-class object, named vector, matrix, or data.frame
 ##' @param mismatches Number of non-significant DMPs allowed (default: 3)
 ##' @param icd Inter-CpG distance (default: 1000bp)
+##' @param chromosome Chromosomes as numeric or "X" or "Y"
+##' @param illumina binary indicator (default: TRUE)
 ##' @return GRanges-class object containing DMRs
 ##' @author R Sliecker, E.W Lameijer, and M. van Iterson
 ##' @importFrom IRanges IRanges
 ##' @importFrom GenomeInfoDb keepSeqlevels
+##' @importFrom GenomicFeatures features
+##' @importFrom utils txtProgressBar setTxtProgressBar read.table
 ##' @export
-##' @examples
-##' dmrData <- data.frame(dmp = attr(padj.cate, "names"), crit = ifelse(padj.cate<0.05, 1, 0))
-##' DMRs <- DMRfinder(dmrData, mismatches=3, icd=1000)
+##' 
 
 DMRfinder = function(data, chromosome=c(1:22,"X","Y"), mismatches=3, icd=1000, illumina=TRUE){
   
@@ -28,7 +30,6 @@ DMRfinder = function(data, chromosome=c(1:22,"X","Y"), mismatches=3, icd=1000, i
     if(check==FALSE | check2==FALSE){
       print("Please check your data, is the format right?")
       }else{
-        library("FDb.InfiniumMethylation.hg19")
         InfiniumMethylation <- features(FDb.InfiniumMethylation.hg19)
         probesselect= as.data.frame(data, stringsAsFactors = F)
         IM = InfiniumMethylation[names(InfiniumMethylation) %in% probesselect[,1],]

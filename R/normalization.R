@@ -35,7 +35,7 @@ screeplot <- function(RGset, nmax=10){
 ##' @author mvaniterson
 ##' @importFrom SummarizedExperiment updateObject assay assay<-
 ##' @export
-preprocessFunnorm.DNAmArray <- function(rgSet, nPCs=2, sex = NULL, bgCorr = TRUE, dyeCorr = TRUE, verbose = TRUE, keepCN=TRUE) {
+preprocessFunnorm.DNAmArray <- function(rgSet, nPCs=2, sex = NULL, bgCorr = TRUE, dyeCorr = TRUE, verbose = TRUE, keepCN=TRUE, ...) {
     
     rgSet <- updateObject(rgSet) ## FIXM: might not KDH: technically, this should not be needed, but might be nice
 

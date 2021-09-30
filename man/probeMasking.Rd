@@ -4,8 +4,12 @@
 \alias{probeMasking}
 \title{Cross-reactive and Polymorphic Probe Masking}
 \usage{
-probeMasking(values, array = c("EPIC", "450"), genome = c("hg19",
-  "hg38"), verbose = TRUE)
+probeMasking(
+  values,
+  array = c("EPIC", "450K"),
+  genome = c("hg19", "hg38"),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{values}{beta or M values}

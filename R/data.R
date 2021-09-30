@@ -1,135 +1,641 @@
-#' Dataframe with overlaps GoNL variants and 450K probes
-#'
-#' Dataframe containing all SNPs and short INDELS from GoNLv5 that
-#' overlap with 450K probes.  This release does not include X and Y
-#' chromosomes, so only information for autosomal probes is
-#' available. For each overlap there is an unique row. Consequently,
-#' some probes are duplicated (probes that overlap with multiple
-#' variants) and some variants are duplicated (some variants overlap
-#' with more than one probe).
-#'
-#'
-#' @format A data frame with 207866 rows and 19 variables:
-#' \describe{
-#'   \item{CHROM}{chromosome, X and Y chromosomes are not available,
-#'                since they are not included in this GoNL release}
-#'   \item{probe}{probe ID}
-#'   \item{type}{Infinium probedesign}
-#'   \item{strand}{orientation of the probe}
-#'   \item{probeType}{whether the probe measures a CpG-site (cg) or
-#'                    a non-CpG site (ch)}
-#'   \item{location_c}{Location of the queried 'C' of the CpG dinucleotide. Note
-#'                     that this is the location of the C that is actually measured.
-#'                     For probes that interrogate the reverse strand (plus-strand probes) this
-#'                     is one base downstream of the C nucleotide on the forward strand}
-#'   \item{location_g}{Location of the G nucleotide of the CpG dinucleotide. Note that this
-#'                     is the location of the queried G. For probes that interrogate the reverse strand
-#'                     (plus-strand probes) this is one base upstream of the G nucleotide on the forward strand}
-#'   \item{ID}{SNP ID}
-#'   \item{snpBeg}{Start coordinate of the variant. Identical to snpEnd for SNPs.}
-#'   \item{snpEnd}{End coordinate of the variant. Identical to snpBeg for SNPs}
-#'   \item{AF}{Allele frequency of alternative allele}
-#'   \item{REF}{Reference allele}
-#'   \item{ALT}{Alternative allele}
-#'   \item{FILTER}{Filter information from GoNL.}
-#'   \item{MAF}{Minor allele frequency}
-#'   \item{variantType}{SNP or INDEL}
-#'   \item{distance_3end}{Distance between SNP and 3'end of the probe. For type I probes
-#'                        the 3'end of the probe coincides with the queried C nucleotide.
-#'                        For type II probes the 3'end of the probe coincides with the G
-#'                        nucleotide directly after the C nucleotide.}
-#'   \item{distance_c}{Distance from queried C nucleotide. A distance of -1 indicates
-#'                     that the SNPs overlaps the SBE-position for type I probes.}
-#'   \item{channel_switch}{Indicates whether a variant in the SBE-location of type I probes
-#'                         causes a color-channel-switch or overlap with an INDEL. For plus-strand probes C/T, C/A and C/G
-#'                         SNPs are expected to cause a color-channel switch. For min-strand probes
-#'                         A/G, G/T and C/G SNPs are expected to cause a color-channel switch.}
-#'                     }
-#'
-#' @usage data(hg19.GoNLsnps)
-#' 
-#' @examples
-#'     data(hg19.GoNLsnps)
-#'     
-#'     # Select variants that overlap with queried C nucleotide
-#'     snps_c <- hg19.GoNLsnps[hg19.GoNLsnps$distance_c == 0, ] 
-#'     
-#'     # Select all INDELS
-#'     indels <- hg19.GoNLsnps[hg19.GoNLsnps$variantType == "INDEL",] 
-#'     
-#'     # Select SNPs that cause a channel-switch
-#'     channel_switch <- hg19.GoNLsnps[!is.na(hg19.GoNLsnps$channel_switch)
-#' & hg19.GoNLsnps$channel_switch == "Yes",]
-#'
-#' @source 
-#'         \url{http://zwdzwd.github.io/InfiniumAnnotation}
-#'         
-#'         \url{https://molgenis26.target.rug.nl/downloads/gonl_public/variants/release5/}
-"hg19.GoNLsnps"
+# TSV file with hg19 mask information for EPIC probes
+#
+# Table containing all SNPs and short INDELS that overlap with 
+# EPIC probes.For each overlap there is an unique row. Consequently,
+# some probes are duplicated (probes that overlap with multiple
+# variants) and some variants are duplicated (some variants overlap
+# with more than one probe).
+#
+#
+# @format A data frame with 865918 rows and 57 variables:
+# \describe{
+#   \item{CpG_chrm}{chromosome location of the target}
+#   \item{CpG_beg}{0-based co-ordinate of the target. The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{CpG_end}{1-based co-ordinate of the target.The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{probe_strand}{strand orientation of the actual
+#   probe. '+' is for all the up-probes positioned in 
+#   smaller co-ordinates and '-' for all the down-probes
+#   positioned in greater co-ordinates with respect to
+#   the target CpGs. '*' is used for unmapped probes.}
+#   \item{probeID}{probe ID}
+#   \item{address_A}{address of probe A on the chip
+#   designated by the original manifest}
+#   \item{address_B}{address of probe B on the chip
+#   designated by the original manifest}
+#   \item{channel}{'Both' for type II probes and 'Grn' or 
+#   'Red' for Type I probes}
+#   \item{designType}{Type of probe, either 'I' or 'II'}
+#   \item{nextBase}{the actual extension base (on the probe
+#   strand) after bisulfite conversion ('A' or 'C' or 'T').
+#   Unmapped probes have extension base labeled in the original
+#   manifest.}
+#   \item{nextBaseRef}{the extension base (on the hybridized /
+#   template DNA) before bisulfite conversion ('A', 'C', 'G',
+#   or 'T'). Unmapped probes have 'NA'.}
+#   \item{probeType}{either 'cg', 'ch', or 'rs'}
+#   \item{orientation}{either 'up or 'down', specifying 
+#   whether the probe is positioned upstream (in smaller
+#   co-ordinates) or downstream (in greater co-ordinates)
+#   from the target}
+#   \item{probeCpGcnt}{the number of additional CpGs in the
+#   probe (not counting the interrogated CpG)}
+#   \item{context35}{the number of CpGs in the [-35bp, +35bp]
+#   window}
+#   \item{probeBeg}{the mapped start position of the probe,
+#   which is always 50bp long}
+#   \item{probeEnd}{the mapped end position of the probe,
+#   which is always 50bp long}
+#   \item{ProbeSeq_A}{the probe sequence for allele A}
+#   \item{ProbeSeq_B}{the probe sequence for allele B}
+#   \item{gene}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Gene models follow
+#   GENCODE version 22 (hg38)}
+#   \item{gene_HGNC}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Genes are checked
+#   using HGNChelper for compatibility with HGNC. Gene models
+#   follows GENCODE version 22 (hg38)}
+#   \item{chrm_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{beg_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{flag_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#  \item{mapQ_A}{the mapping quality score for probe A excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{NM_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{chrm_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{beg_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{flag_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{mapQ_B}{the mapping quality score for probe B excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{NM_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_A}{the mapping quality score for probe A including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_B}{the mapping quality score for probe B including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{posMatch}{whether the mapping matches the original
+#   manifest, it only applies to hg19 and will be NA under 
+#   hg38}
+#   \item{MASK_mapping}{whether the probe is masked for mapping
+#   reasons. Probes retained should have high quality (>=40)
+#   consistent (with designed MAPINFO) mapping (for both in the
+#   cast of type I) without INDELS}
+#   \item{MASK_typeINextBaseSwitch}{whether the probe has a SNP
+#   in the extension base that causes a color channel switch from
+#   the official annotation (described as color channel switching
+#   or CCS SNP in the reference). These probes should be processed
+#   differently than designed (by summin up both color channels
+#   instead of just the annotated color channel)}
+#   \item{MASK_rmsk15}{whetehr the 15bp 3'-subsequence of the
+#   probe overlaps with repeat masker, this MASK is NOT 
+#   recommended}
+#   \item{MASK_sub40_copy}{whether the 40bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub35_copy}{whether the 35bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub30_copy}{whether the 30bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub25_copy}{whether the 25bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_snp5_common}{whether 5bp 3'-subsequence (including
+#   extension for tyep II) overlaps with any of the common SNPs
+#   from dbSNP (global MAF can be under 1%)}
+#   \item{MASK_snp5_GMAF1p}{whether 5bp 3'-subsequence (including
+#   extension for type II) overlaps with any of the SNPs with 
+#   global MAF > 1%}
+#   \item{MASK_extBase}{probes masked for extension base inconsistent
+#   with specified color channel (type I) or CpG (Type II) based
+#   on mapping}
+#   \item{MASK_general}{recommended general ppurpose masking
+#   merged from MASK_sub30_copy, MASK_mapping, MASK_extBase,
+#   MASK_typeINExtBaseSwitch and MASK_snp5_GMAF1p}
+#
+# @usage read_tsv('data/EPIC.hg19.manifest.tsv.gz')
+#
+# @source 
+#         \url{http://zwdzwd.github.io/InfiniumAnnotation}
+#         
+"EPIC.hg19.manifest.txt"
 
-#' HM450 population-specific probe-masking recommendations
-#' 
-#' Adapted version of the annotation file provided by Zhou et al. (see
-#' source, Mar-13-2017 release).  This annotation file contains
-#' population-specific probe-masking recommendations based on SNPs
-#' within 5 bases from the 3'end of the probe, mapping issues,
-#' non-unique 3' 30bp subsequence and channel-switching SNPs in the
-#' single-base-extension for type I probes. We added
-#' population-specific masking recommendations for the Dutch
-#' population using GoNL release 5. This release does not include X
-#' and Y chromosomes, so for the Dutch population, only masking
-#' information for the autosomal probes is available.
-#' 
-#' Note: Zhou et al. identified several probes that match to a
-#' different location than annotated in the original Illumina manifest
-#' file. The authors have used the 'updated' location in their
-#' annotation file. Therefore, a handful of probes in this annotation
-#' file are annotated to a different location than the original
-#' Illumina manifest file. For the identification of the overlaps we
-#' used the locations as annotated in the original Illumina file.
-#' Therefore, a few of the identified overlaps do not match the
-#' locations as specified in this annotation file.  This also explains
-#' why GoNL masking information is available for a couple of probes
-#' that are located in the X- and Y-chromosome in this annotation:
-#' these probes map to autosomal probes in the original Illumina
-#' file. All probes that map to a different location than originally
-#' annotated are recommended to be masked (in the MASK.mapping and
-#' MASK.general column), so generally they won't be included in
-#' further analyses.
-#'
-#' @format A GRanges object with 485577 ranges and 65 metadata columns:
-#' \describe{
-#'   \item{MASK.general.pop}{Recommended general purpose masking merged from "MASK.sub30.copy", "MASK.mapping" (in either
-#'         the hg38 or hg19 genome), "MASK.extBase", "MASK.typeINextBaseSwitch" and "MASK.snp5.pop" from the 
-#'         "hm450.manifest" file and the "hm450.manifest.pop" file (see source).
-#'         For GoNL, "MASK.typeINextBaseSwitchandINDEL.GoNL" is used instead of "MASK.typeINextBaseSwitch"}
-#'   \item{MASK.snp5.pop}{Whether the 5bp 3'-subsequence (including extension for type II) overlap with a SNP with
-#'                        population-specific AF > 0.01}
-#'   \item{MASK.typeINextBaseSwitchandINDEL.GoNL}{SNPs (that cause a color-channel switch) and INDELS with AF > 0.01 in GoNL. 
-#'         In contrast, "MASK.typeINextBaseSwitch" column is based on all SNPs in 1000 genomes and dbSNP,
-#'         regardless of population or allele frequency}
-#' }
-#'
-#' @source \url{http://zwdzwd.github.io/InfiniumAnnotation}
-#' 
-#' @usage data(hm450.manifest.pop.GoNL)
-#' 
-#' @examples 
-#' # Select probes that should be masked in Dutch population (note that X and Y chromosomes are not included)
-#' hm450.manifest.pop.GoNL <- hm450.manifest.pop.GoNL[!is.na(hm450.manifest.pop.GoNL$MASK.general.GoNL) &
-#'                                                      hm450.manifest.pop.GoNL$MASK.general.GoNL == TRUE, ]
-#'   
-#' # Select probes that should be masked in Dutch population because there is 
-#' # a SNP within 5 bases of the 3'end of the probe (note that X and Y chromosomes are not included)
-#' hm450.manifest.pop.GoNL <- hm450.manifest.pop.GoNL[!is.na(hm450.manifest.pop.GoNL$MASK.snp5.GoNL) &
-#'                                                        hm450.manifest.pop.GoNL$MASK.snp5.GoNL == TRUE, ]
-#' # When studying a Dutch population and one wants to include X and Y chromosomal probes,
-#' # the EUR or CEU population can be used.                                                      
-#' # Select probes that should be masked in European population (these include X and Y chromosomes)                                                      
-#' hm450.manifest.pop.GoNL <- hm450.manifest.pop.GoNL[hm450.manifest.pop.GoNL$MASK.general.EUR == TRUE,]
-#'
-#'
-#' @references
-#'        Zhou W, Laird PW and Shen H: Comprehensive characterization, annotation and innovative use of Infinium DNA Methylation BeadChip probes.
-#'        Nucleic Acids Research 2016
-"hm450.manifest.pop.GoNL"
+# TSV file with hg38 mask information for EPIC probes
+#
+# Table containing all SNPs and short INDELS that overlap with 
+# EPIC probes.For each overlap there is an unique row. Consequently,
+# some probes are duplicated (probes that overlap with multiple
+# variants) and some variants are duplicated (some variants overlap
+# with more than one probe).
+#
+#
+# @format A data frame with 865918 rows and 57 variables:
+# \describe{
+#   \item{CpG_chrm}{chromosome location of the target}
+#   \item{CpG_beg}{0-based co-ordinate of the target. The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{CpG_end}{1-based co-ordinate of the target.The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{probe_strand}{strand orientation of the actual
+#   probe. '+' is for all the up-probes positioned in 
+#   smaller co-ordinates and '-' for all the down-probes
+#   positioned in greater co-ordinates with respect to
+#   the target CpGs. '*' is used for unmapped probes.}
+#   \item{probeID}{probe ID}
+#   \item{address_A}{address of probe A on the chip
+#   designated by the original manifest}
+#   \item{address_B}{address of probe B on the chip
+#   designated by the original manifest}
+#   \item{channel}{'Both' for type II probes and 'Grn' or 
+#   'Red' for Type I probes}
+#   \item{designType}{Type of probe, either 'I' or 'II'}
+#   \item{nextBase}{the actual extension base (on the probe
+#   strand) after bisulfite conversion ('A' or 'C' or 'T').
+#   Unmapped probes have extension base labeled in the original
+#   manifest.}
+#   \item{nextBaseRef}{the extension base (on the hybridized /
+#   template DNA) before bisulfite conversion ('A', 'C', 'G',
+#   or 'T'). Unmapped probes have 'NA'.}
+#   \item{probeType}{either 'cg', 'ch', or 'rs'}
+#   \item{orientation}{either 'up or 'down', specifying 
+#   whether the probe is positioned upstream (in smaller
+#   co-ordinates) or downstream (in greater co-ordinates)
+#   from the target}
+#   \item{probeCpGcnt}{the number of additional CpGs in the
+#   probe (not counting the interrogated CpG)}
+#   \item{context35}{the number of CpGs in the [-35bp, +35bp]
+#   window}
+#   \item{probeBeg}{the mapped start position of the probe,
+#   which is always 50bp long}
+#   \item{probeEnd}{the mapped end position of the probe,
+#   which is always 50bp long}
+#   \item{ProbeSeq_A}{the probe sequence for allele A}
+#   \item{ProbeSeq_B}{the probe sequence for allele B}
+#   \item{gene}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Gene models follow
+#   GENCODE version 22 (hg38)}
+#   \item{gene_HGNC}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Genes are checked
+#   using HGNChelper for compatibility with HGNC. Gene models
+#   follows GENCODE version 22 (hg38)}
+#   \item{chrm_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{beg_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{flag_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{mapQ_A}{the mapping quality score for probe A excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{NM_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{chrm_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{beg_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{flag_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{mapQ_B}{the mapping quality score for probe B excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{NM_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_A}{the mapping quality score for probe A including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_B}{the mapping quality score for probe B including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{posMatch}{whether the mapping matches the original
+#   manifest, it only applies to hg19 and will be NA under 
+#   hg38}
+#   \item{MASK_mapping}{whether the probe is masked for mapping
+#   reasons. Probes retained should have high quality (>=40)
+#   consistent (with designed MAPINFO) mapping (for both in the
+#   cast of type I) without INDELS}
+#   \item{MASK_typeINextBaseSwitch}{whether the probe has a SNP
+#   in the extension base that causes a color channel switch from
+#   the official annotation (described as color channel switching
+#   or CCS SNP in the reference). These probes should be processed
+#   differently than designed (by summin up both color channels
+#   instead of just the annotated color channel)}
+#   \item{MASK_rmsk15}{whetehr the 15bp 3'-subsequence of the
+#   probe overlaps with repeat masker, this MASK is NOT 
+#   recommended}
+#   \item{MASK_sub40_copy}{whether the 40bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub35_copy}{whether the 35bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub30_copy}{whether the 30bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub25_copy}{whether the 25bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_snp5_common}{whether 5bp 3'-subsequence (including
+#   extension for tyep II) overlaps with any of the common SNPs
+#   from dbSNP (global MAF can be under 1%)}
+#   \item{MASK_snp5_GMAF1p}{whether 5bp 3'-subsequence (including
+#   extension for type II) overlaps with any of the SNPs with 
+#   global MAF > 1%}
+#   \item{MASK_extBase}{probes masked for extension base inconsistent
+#   with specified color channel (type I) or CpG (Type II) based
+#   on mapping}
+#   \item{MASK_general}{recommended general ppurpose masking
+#   merged from MASK_sub30_copy, MASK_mapping, MASK_extBase,
+#   MASK_typeINExtBaseSwitch and MASK_snp5_GMAF1p}
+#
+# @usage read_tsv('data/EPIC.hg19.manifest.tsv.gz')
+#
+# @source 
+#         \url{http://zwdzwd.github.io/InfiniumAnnotation}
+#         
+NULL
+
+# TSV file with hg19 mask information for 450K probes
+#
+# Table containing all SNPs and short INDELS that overlap with 
+# EPIC probes.For each overlap there is an unique row. Consequently,
+# some probes are duplicated (probes that overlap with multiple
+# variants) and some variants are duplicated (some variants overlap
+# with more than one probe).
+#
+#
+# @format A data frame with 485577 rows and 57 variables:
+# \describe{
+#   \item{CpG_chrm}{chromosome location of the target}
+#   \item{CpG_beg}{0-based co-ordinate of the target. The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{CpG_end}{1-based co-ordinate of the target.The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{probe_strand}{strand orientation of the actual
+#   probe. '+' is for all the up-probes positioned in 
+#   smaller co-ordinates and '-' for all the down-probes
+#   positioned in greater co-ordinates with respect to
+#   the target CpGs. '*' is used for unmapped probes.}
+#   \item{probeID}{probe ID}
+#   \item{address_A}{address of probe A on the chip
+#   designated by the original manifest}
+#   \item{address_B}{address of probe B on the chip
+#   designated by the original manifest}
+#   \item{channel}{'Both' for type II probes and 'Grn' or 
+#   'Red' for Type I probes}
+#   \item{designType}{Type of probe, either 'I' or 'II'}
+#   \item{nextBase}{the actual extension base (on the probe
+#   strand) after bisulfite conversion ('A' or 'C' or 'T').
+#   Unmapped probes have extension base labeled in the original
+#   manifest.}
+#   \item{nextBaseRef}{the extension base (on the hybridized /
+#   template DNA) before bisulfite conversion ('A', 'C', 'G',
+#   or 'T'). Unmapped probes have 'NA'.}
+#   \item{probeType}{either 'cg', 'ch', or 'rs'}
+#   \item{orientation}{either 'up or 'down', specifying 
+#   whether the probe is positioned upstream (in smaller
+#   co-ordinates) or downstream (in greater co-ordinates)
+#   from the target}
+#   \item{probeCpGcnt}{the number of additional CpGs in the
+#   probe (not counting the interrogated CpG)}
+#   \item{context35}{the number of CpGs in the [-35bp, +35bp]
+#   window}
+#   \item{probeBeg}{the mapped start position of the probe,
+#   which is always 50bp long}
+#   \item{probeEnd}{the mapped end position of the probe,
+#   which is always 50bp long}
+#   \item{ProbeSeq_A}{the probe sequence for allele A}
+#   \item{ProbeSeq_B}{the probe sequence for allele B}
+#   \item{gene}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Gene models follow
+#   GENCODE version 22 (hg38)}
+#   \item{gene_HGNC}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Genes are checked
+#   using HGNChelper for compatibility with HGNC. Gene models
+#   follows GENCODE version 22 (hg38)}
+#   \item{chrm_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{beg_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{flag_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{mapQ_A}{the mapping quality score for probe A excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{NM_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{chrm_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{beg_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{flag_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{mapQ_B}{the mapping quality score for probe B excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{NM_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_A}{the mapping quality score for probe A including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_B}{the mapping quality score for probe B including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{posMatch}{whether the mapping matches the original
+#   manifest, it only applies to hg19 and will be NA under 
+#   hg38}
+#   \item{MASK_mapping}{whether the probe is masked for mapping
+#   reasons. Probes retained should have high quality (>=40)
+#   consistent (with designed MAPINFO) mapping (for both in the
+#   cast of type I) without INDELS}
+#   \item{MASK_typeINextBaseSwitch}{whether the probe has a SNP
+#   in the extension base that causes a color channel switch from
+#   the official annotation (described as color channel switching
+#   or CCS SNP in the reference). These probes should be processed
+#   differently than designed (by summin up both color channels
+#   instead of just the annotated color channel)}
+#   \item{MASK_rmsk15}{whetehr the 15bp 3'-subsequence of the
+#   probe overlaps with repeat masker, this MASK is NOT 
+#   recommended}
+#   \item{MASK_sub40_copy}{whether the 40bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub35_copy}{whether the 35bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub30_copy}{whether the 30bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub25_copy}{whether the 25bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_snp5_common}{whether 5bp 3'-subsequence (including
+#   extension for tyep II) overlaps with any of the common SNPs
+#   from dbSNP (global MAF can be under 1%)}
+#   \item{MASK_snp5_GMAF1p}{whether 5bp 3'-subsequence (including
+#   extension for type II) overlaps with any of the SNPs with 
+#   global MAF > 1%}
+#   \item{MASK_extBase}{probes masked for extension base inconsistent
+#   with specified color channel (type I) or CpG (Type II) based
+#   on mapping}
+#   \item{MASK_general}{recommended general ppurpose masking
+#   merged from MASK_sub30_copy, MASK_mapping, MASK_extBase,
+#   MASK_typeINExtBaseSwitch and MASK_snp5_GMAF1p}
+#
+# @usage read_tsv('data/EPIC.hg19.manifest.tsv.gz')
+#
+# @source 
+#         \url{http://zwdzwd.github.io/InfiniumAnnotation}
+#         
+NULL
+
+
+# TSV file with hg38 mask information for 450K probes
+#
+# Table containing all SNPs and short INDELS that overlap with 
+# EPIC probes.For each overlap there is an unique row. Consequently,
+# some probes are duplicated (probes that overlap with multiple
+# variants) and some variants are duplicated (some variants overlap
+# with more than one probe).
+#
+#
+# @format A data frame with 485577 rows and 57 variables:
+# \describe{
+#   \item{CpG_chrm}{chromosome location of the target}
+#   \item{CpG_beg}{0-based co-ordinate of the target. The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{CpG_end}{1-based co-ordinate of the target.The 
+#   co-ordinates should have a span of 2 nucleotides for
+#   CpG probes, or 1 nucleotide for CpH and SNP probes. Some
+#   erroneous CpH probe co-ordinates mapping information in 
+#   the manufacturer's manifest have been corrected.}
+#   \item{probe_strand}{strand orientation of the actual
+#   probe. '+' is for all the up-probes positioned in 
+#   smaller co-ordinates and '-' for all the down-probes
+#   positioned in greater co-ordinates with respect to
+#   the target CpGs. '*' is used for unmapped probes.}
+#   \item{probeID}{probe ID}
+#   \item{address_A}{address of probe A on the chip
+#   designated by the original manifest}
+#   \item{address_B}{address of probe B on the chip
+#   designated by the original manifest}
+#   \item{channel}{'Both' for type II probes and 'Grn' or 
+#   'Red' for Type I probes}
+#   \item{designType}{Type of probe, either 'I' or 'II'}
+#   \item{nextBase}{the actual extension base (on the probe
+#   strand) after bisulfite conversion ('A' or 'C' or 'T').
+#   Unmapped probes have extension base labeled in the original
+#   manifest.}
+#   \item{nextBaseRef}{the extension base (on the hybridized /
+#   template DNA) before bisulfite conversion ('A', 'C', 'G',
+#   or 'T'). Unmapped probes have 'NA'.}
+#   \item{probeType}{either 'cg', 'ch', or 'rs'}
+#   \item{orientation}{either 'up or 'down', specifying 
+#   whether the probe is positioned upstream (in smaller
+#   co-ordinates) or downstream (in greater co-ordinates)
+#   from the target}
+#   \item{probeCpGcnt}{the number of additional CpGs in the
+#   probe (not counting the interrogated CpG)}
+#   \item{context35}{the number of CpGs in the [-35bp, +35bp]
+#   window}
+#   \item{probeBeg}{the mapped start position of the probe,
+#   which is always 50bp long}
+#   \item{probeEnd}{the mapped end position of the probe,
+#   which is always 50bp long}
+#   \item{ProbeSeq_A}{the probe sequence for allele A}
+#   \item{ProbeSeq_B}{the probe sequence for allele B}
+#   \item{gene}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Gene models follow
+#   GENCODE version 22 (hg38)}
+#   \item{gene_HGNC}{comma separated list of gene annotations
+#   (unique and alphabetically sorted). Genes are checked
+#   using HGNChelper for compatibility with HGNC. Gene models
+#   follows GENCODE version 22 (hg38)}
+#   \item{chrm_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{beg_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{flag_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{mapQ_A}{the mapping quality score for probe A excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{NM_A}{the mapping info for probe A excluding 
+#   decoy chromosomes}
+#   \item{chrm_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{beg_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{flag_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{mapQ_B}{the mapping quality score for probe B excluding 
+#   decoy chromosomes, with 60 being the best}
+#   \item{cigar_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{NM_B}{the mapping info for probe B excluding 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_A}{the mapping quality score for probe A including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_A}{the mapping info for probe A including 
+#   decoy chromosomes}
+#   \item{wDecoy_chrm_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_beg_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_flag_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_mapQ_B}{the mapping quality score for probe B including 
+#   decoy chromosomes, with 60 being the best}
+#   \item{wDecoy_cigar_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{wDecoy_NM_B}{the mapping info for probe B including 
+#   decoy chromosomes}
+#   \item{posMatch}{whether the mapping matches the original
+#   manifest, it only applies to hg19 and will be NA under 
+#   hg38}
+#   \item{MASK_mapping}{whether the probe is masked for mapping
+#   reasons. Probes retained should have high quality (>=40)
+#   consistent (with designed MAPINFO) mapping (for both in the
+#   cast of type I) without INDELS}
+#   \item{MASK_typeINextBaseSwitch}{whether the probe has a SNP
+#   in the extension base that causes a color channel switch from
+#   the official annotation (described as color channel switching
+#   or CCS SNP in the reference). These probes should be processed
+#   differently than designed (by summin up both color channels
+#   instead of just the annotated color channel)}
+#   \item{MASK_rmsk15}{whetehr the 15bp 3'-subsequence of the
+#   probe overlaps with repeat masker, this MASK is NOT 
+#   recommended}
+#   \item{MASK_sub40_copy}{whether the 40bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub35_copy}{whether the 35bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub30_copy}{whether the 30bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_sub25_copy}{whether the 25bp 3'subsequence of the
+#   probe is non-unique}
+#   \item{MASK_snp5_common}{whether 5bp 3'-subsequence (including
+#   extension for tyep II) overlaps with any of the common SNPs
+#   from dbSNP (global MAF can be under 1%)}
+#   \item{MASK_snp5_GMAF1p}{whether 5bp 3'-subsequence (including
+#   extension for type II) overlaps with any of the SNPs with 
+#   global MAF > 1%}
+#   \item{MASK_extBase}{probes masked for extension base inconsistent
+#   with specified color channel (type I) or CpG (Type II) based
+#   on mapping}
+#   \item{MASK_general}{recommended general ppurpose masking
+#   merged from MASK_sub30_copy, MASK_mapping, MASK_extBase,
+#   MASK_typeINExtBaseSwitch and MASK_snp5_GMAF1p}
+#
+# @usage read_tsv('data/EPIC.hg19.manifest.tsv.gz')
+#
+# @source 
+#         \url{http://zwdzwd.github.io/InfiniumAnnotation}
+#         
+NULL
+
+
+# Data frame with coefficients for estimating blood counts
+#
+# Contains coefficients derived from the WBCC predictor
+#
+# @format A data frame with 481392 rows and 5 variables:
+# \describe{
+#   \item{baso_perc}{coefficient for estimating basophils}
+#   \item{eos_perc}{coefficient for estimating eosinophils}
+#   \item{lymph_perc}{coefficient for estimating lymphocytes}
+#   \item{mono_perc}{coefficient for estimating monocytes}
+#   \item{neut_perc}{coefficient for estimating neutrophils}
+#
+# @usage data(DNAmPredictorCoef)
+#         
+NULL

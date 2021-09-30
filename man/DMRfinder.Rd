@@ -4,15 +4,24 @@
 \alias{DMRfinder}
 \title{DMR finder}
 \usage{
-DMRfinder(data, chromosome = c(1:22, "X", "Y"), mismatches = 3,
-  icd = 1000, illumina = TRUE)
+DMRfinder(
+  data,
+  chromosome = c(1:22, "X", "Y"),
+  mismatches = 3,
+  icd = 1000,
+  illumina = TRUE
+)
 }
 \arguments{
+\item{data}{GRanges-class object, named vector, matrix, or data.frame}
+
+\item{chromosome}{Chromosomes as numeric or "X" or "Y"}
+
 \item{mismatches}{Number of non-significant DMPs allowed (default: 3)}
 
 \item{icd}{Inter-CpG distance (default: 1000bp)}
 
-\item{regions}{GRanges-class object, named vector, matrix, or data.frame}
+\item{illumina}{binary indicator (default: TRUE)}
 }
 \value{
 GRanges-class object containing DMRs
@@ -26,10 +35,6 @@ from a list of differentially methylated probes (DMPs). This was
 developed by Roderick Slieker and is described in "Identification 
 and systematic annotation of tissue-specific differentially methylated 
 regions using the Illumina 450k array" Slieker et al. (2013)
-}
-\examples{
-dmrData <- data.frame(dmp = attr(padj.cate, "names"), crit = ifelse(padj.cate<0.05, 1, 0))
-DMRs <- DMRfinder(dmrData, mismatches=3, icd=1000)
 }
 \author{
 R Sliecker, E.W Lameijer, and M. van Iterson

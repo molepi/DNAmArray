@@ -4,8 +4,16 @@
 \alias{reduce}
 \title{Extract functional normalized data according to filter data}
 \usage{
-reduce(GRset, RGset, what = c("beta", "M"), cutp = 0.01,
-  cutsamples = 0.95, cutcpgs = 0.95, verbose = TRUE, ...)
+reduce(
+  GRset,
+  RGset,
+  what = c("beta", "M"),
+  cutp = 0.01,
+  cutsamples = 0.95,
+  cutcpgs = 0.95,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{GRset}{'GenomicRatioSet' output from functional normalization}

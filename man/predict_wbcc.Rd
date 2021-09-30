@@ -4,8 +4,15 @@
 \alias{predict_wbcc}
 \title{Predict cell-type composition from methylation values}
 \usage{
-predict_wbcc(pred, data, covar, transformation = function(x) x,
-  ncomp = NULL, impute = TRUE, ...)
+predict_wbcc(
+  pred,
+  data,
+  covar,
+  transformation = function(x) x,
+  ncomp = NULL,
+  impute = TRUE,
+  ...
+)
 }
 \arguments{
 \item{pred}{A matrix or mvr predictor, trained using train_wbcc}

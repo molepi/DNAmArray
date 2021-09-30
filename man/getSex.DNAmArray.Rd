@@ -4,7 +4,13 @@
 \alias{getSex.DNAmArray}
 \title{Determine sex based on X chr methylation status}
 \usage{
-getSex.DNAmArray(beta, cutbeta = c(0.2, 0.6), nx = 3000)
+getSex.DNAmArray(
+  beta,
+  cutbeta = c(0.2, 0.6),
+  nx = 3000,
+  array = "450K",
+  genome = "hg19"
+)
 }
 \arguments{
 \item{beta}{beta matrix}
@@ -12,6 +18,10 @@ getSex.DNAmArray(beta, cutbeta = c(0.2, 0.6), nx = 3000)
 \item{cutbeta}{beta values threshold use values between [0.2-0.6]}
 
 \item{nx}{number of X chr probes to determine sex is Male default 3000}
+
+\item{array}{EPIC or 450K}
+
+\item{genome}{hg19 or hg38}
 }
 \value{
 sex prediction
@@ -20,5 +30,5 @@ sex prediction
 Determine sex based on X chr methylation status
 }
 \author{
-rcslieker
+ljsinke
 }

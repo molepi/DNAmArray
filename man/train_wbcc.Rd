@@ -4,8 +4,15 @@
 \alias{train_wbcc}
 \title{Train a predictor for cell-type composition}
 \usage{
-train_wbcc(data, covar, cellPer, model = formula(cellPer ~ covar + data),
-  ncomp = 50, keep.model = FALSE, ...)
+train_wbcc(
+  data,
+  covar,
+  cellPer,
+  model = formula(cellPer ~ covar + data),
+  ncomp = 50,
+  keep.model = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{Matrix with DNA methylation beta-values}

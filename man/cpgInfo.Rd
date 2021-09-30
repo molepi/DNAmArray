@@ -15,10 +15,10 @@ cpgInfo(cpgs, TxDb)
 data.frame with cpg annotations
 }
 \description{
-find gene nearest to list fo cpgs
+find gene nearest to list of cpgs
 }
 \details{
-find gene nearest to list fo cpgs
+find gene nearest to list of cpgs
 }
 \author{
 mvaniterson
