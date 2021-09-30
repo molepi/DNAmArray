@@ -53,16 +53,16 @@ read.metharray.exp.par <- function(targets, verbose = TRUE, ...) {
 ##' @export 
 getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array = '450K', genome = 'hg19'){
   if(array=="EPIC" & genome=="hg19") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg19.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/EPIC.hg19.manifest.txt.gz"))
   }
   if(array=="EPIC" & genome=="hg38") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg38.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/EPIC.hg38.manifest.txt.gz"))
   }
   if(array=="450K" & genome=="hg19") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg19.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/HM450.hg19.manifest.txt.gz"))
   }
   if(array=="450K" & genome=="hg38") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg38.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/HM450.hg38.manifest.txt.gz"))
   }
   
   chrX <- names(maskProbes[seqnames(maskProbes) %in% 'chrX'])
