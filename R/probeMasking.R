@@ -29,16 +29,16 @@ probeMasking <- function(values, array=c("EPIC","450K"), genome=c("hg19","hg38")
   }
   
   if(array=="EPIC" & genome=="hg19") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg19.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/EPIC.hg19.manifest.txt.gz"))
   }
   if(array=="EPIC" & genome=="hg38") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/EPIC.hg38.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/EPIC.hg38.manifest.txt.gz"))
   }
   if(array=="450K" & genome=="hg19") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg19.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/HM450.hg19.manifest.txt.gz"))
   }
   if(array=="450K" & genome=="hg38") {
-    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/inst/extdata/450K.hg38.manifest.txt.gz"))
+    maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/HM450.hg38.manifest.txt.gz"))
   }
   
   maskProbes <- names(maskProbes[maskProbes$MASK_general])
