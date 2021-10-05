@@ -68,7 +68,6 @@ getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array = '450K
   chrX <- maskProbes[maskProbes$CpG_chrm == 'chrX' & maskProbes$probeType == 'cg',]$probeID
   
   betaX <- beta[rownames(beta) %in% chrX,]
-  betaX <- assay(betaX)
   
   nopoX <- colSums(betaX >= cutbeta[1] & betaX <= cutbeta[2], na.rm=TRUE)
   ifelse(nopoX <= nx, "Male", "Female")
