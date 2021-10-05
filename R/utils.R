@@ -65,8 +65,7 @@ getSex.DNAmArray <- function(beta, cutbeta=c(0.2, 0.6), nx = 3000, array = '450K
     maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/HM450.hg38.manifest.txt.gz"))
   }
   
-  chrX <- names(maskProbes[seqnames(maskProbes) %in% 'chrX'])
-  chrX <- chrX[grep("cg", chrX)]
+  chrX <- maskProbes[maskProbes$CpG_chrm == 'chrX' & maskProbes$probeType == 'cg',]$probeID
   
   betaX <- beta[rownames(beta) %in% chrX,]
   betaX <- assay(betaX)
