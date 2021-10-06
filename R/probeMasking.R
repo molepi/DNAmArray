@@ -41,7 +41,7 @@ probeMasking <- function(values, array=c("EPIC","450K"), genome=c("hg19","hg38")
     maskProbes <- read_tsv(paste0(path.package("DNAmArray"), "/extdata/HM450.hg38.manifest.txt.gz"))
   }
   
-  maskProbes <- names(maskProbes[maskProbes$MASK_general])
+  maskProbes <- maskProbes[maskProbes$MASK_general == TRUE,]$probeID
   
   if(verbose==TRUE) {
     numMask <- length(maskProbes)
