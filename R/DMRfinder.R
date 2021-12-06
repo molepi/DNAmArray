@@ -10,7 +10,7 @@
 ##' @param mismatches Number of non-significant DMPs allowed (default: 3)
 ##' @param icd Inter-CpG distance (default: 1000bp)
 ##' @param chromosome Chromosomes as numeric or "X" or "Y"
-##' @param illumina binary indicator (default: TRUE)
+##' @param illumina indicator specifying to use CpGs (TRUE) or genomic locations (FALSE) (default: TRUE)
 ##' @return GRanges-class object containing DMRs
 ##' @author R Sliecker, E.W Lameijer, and M. van Iterson
 ##' @importFrom IRanges IRanges
