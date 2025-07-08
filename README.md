@@ -2,15 +2,13 @@
 
 
 ![alt text](http://www.molepi.nl/images/logo.png)
-	  
-[![Travis-CI Build Status](https://travis-ci.org/molepi/DNAmArray.svg?branch=master)](https://travis-ci.org/molepi/DNAmArray)
 	     
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.158908.svg)](https://doi.org/10.5281/zenodo.158908)
 
 
 # Workflow #
 
-Check out our compleet workflow: [workflow](https://molepi.github.io/DNAmArray_workflow/)
+Check out our complete workflow: [workflow](https://molepi.github.io/DNAmArray_workflow/)
 
 # Installation #
 
