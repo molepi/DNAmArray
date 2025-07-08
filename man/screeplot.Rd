@@ -2,24 +2,21 @@
 % Please edit documentation in R/normalization.R
 \name{screeplot}
 \alias{screeplot}
-\title{Scree plot of the 450k control probe intensities}
+\title{Scree plot of the control probe intensities}
 \usage{
 screeplot(RGset, nmax = 10)
 }
 \arguments{
 \item{RGset}{object of class 'RGChannelSet'}
 
-\item{nmax}{maximal number of PC's to show}
+\item{nmax}{maximal number of PCs to show}
 }
 \value{
-outut of prcomp using the control probe matrix
+output of prcomp using the control probe matrix
 }
 \description{
-Scree plot of the 450k control probe intensities
+Scree plot of the control probe intensities (450k or EPIC)
 }
 \details{
-Scree-plot to detect the optimal number of PC to use in Functional Normalization
-}
-\author{
-mvaniterson
+Scree-plot to detect the optimal number of PCs to use in Functional Normalization
 }

@@ -21,7 +21,7 @@ DMRfinder(
 
 \item{icd}{Inter-CpG distance (default: 1000bp)}
 
-\item{illumina}{binary indicator (default: TRUE)}
+\item{illumina}{indicator specifying to use CpGs (TRUE) or genomic locations (FALSE) (default: TRUE)}
 }
 \value{
 GRanges-class object containing DMRs

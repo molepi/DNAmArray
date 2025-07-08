@@ -1,22 +1,24 @@
-##' Scree plot of the 450k control probe intensities
+##' Scree plot of the control probe intensities (450k or EPIC)
 ##'
-##' Scree-plot to detect the optimal number of PC to use in Functional Normalization
-##' @title Scree plot of the 450k control probe intensities
+##' Scree-plot to detect the optimal number of PCs to use in Functional Normalization
+##' @title Scree plot of the control probe intensities
 ##' @param RGset object of class 'RGChannelSet'
-##' @param nmax maximal number of PC's to show
-##' @return outut of prcomp using the control probe matrix
+##' @param nmax maximal number of PCs to show
+##' @return output of prcomp using the control probe matrix
 ##' @importFrom stats prcomp
-##' @author mvaniterson
-##' @export
 ##' @importFrom graphics barplot
-screeplot <- function(RGset, nmax=10){
-    controlMatrix <- minfi:::.buildControlMatrix450k(minfi:::.extractFromRGSet450k(RGset))
-    pc <- prcomp(controlMatrix)
-
-    nmax <- ifelse(nmax > nrow(controlMatrix), nrow(controlMatrix), nmax)
-    
-    barplot(summary(pc)$importance[2,1:nmax], ylab="Proportion of Variance", main="Scree Plot", col="#7cb4c9")
-    invisible(pc)
+##' @export
+screeplot <- function(RGset, nmax = 10) {
+  controlMatrix <- minfi:::.buildControlMatrix(minfi:::.extractFromRGSet(RGset))
+  pc <- prcomp(controlMatrix)
+  
+  nmax <- min(nmax, nrow(controlMatrix))
+  barplot(summary(pc)$importance[2, 1:nmax], 
+          ylab = "Proportion of Variance", 
+          main = "Scree Plot", 
+          col = "#7cb4c9")
+  
+  invisible(pc)
 }
 
 ##' preprocessFunnorm from minfi with additional return options
