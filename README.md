@@ -1,10 +1,6 @@
 # Streamlined workflow for the quality control, normalization and bias-free analysis of Illumina methylation array data - The Leiden approach #
 
-
-![alt text](http://www.molepi.nl/images/logo.png)
-	     
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.158908.svg)](https://doi.org/10.5281/zenodo.158908)
-
 
 # Workflow #
 
@@ -14,10 +10,7 @@ Check out our complete workflow: [workflow](https://molepi.github.io/DNAmArray_w
 
 The **DNAmArray**-package can be installed in several ways which are
 described below. The package has been installed successfully for >=
-R-3.2.0 on different linux-builds. Currently, two branches are
-available:
-1. master for >= R-3.4.0 compatible with >= 1.22.1 minfi
-2. R-3.3.0  for older R and minfi version's
+R-4.4.3 on different linux-builds.
 
 The package depends on many other packages from
 [BioConductor](https://www.bioconductor.org) or
@@ -35,7 +28,7 @@ use:
 ```{r devtools, eval=FALSE}
 library(devtools)
 install_github("molepi/DNAmArray") ##for master
-install_github("molepi/DNAmArray", ref="R-3.3.0") ##for other branches
+install_github("molepi/DNAmArray", ref="R-4.4.3") ##for other branches
 ```
 
 Sometimes `install_github` fails with CA cert error. Try running `httr::set_config(httr::config( ssl_verifypeer = 0L))` before running `install_github`!
