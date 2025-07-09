@@ -290,7 +290,7 @@ plotDP <- function(object,
   y <- colMeans(detP_matrix < detP)
   x <- 1:length(y)
   data <- data.frame(x, y, row.names = names(y))
-  targets <- object@targets
+  targets <- as.data.frame(colData(RGset))
   data <- merge(data, targets, by = "row.names", suffixes = c("", ".y"))
   
   ## Get outliers
