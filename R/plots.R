@@ -272,8 +272,9 @@ plotHC <- function(object,
 ##' basic DP scatter plot
 ##'
 ##' @title DP quality control plot
-##' @param object input sData
-##' @param threshold threshold value
+##' @param object input RGset
+##' @param detP detection p-value threshold
+##' @param threshold proportion of probes required
 ##' @param col col
 ##' @return plot
 ##' @author Tom Kuipers, ljsinke
@@ -281,9 +282,12 @@ plotHC <- function(object,
 ##' @import ggplot2
 
 plotDP <- function(object,
+                   detP,
                    threshold,
                    col = NULL) {
-  y <- object@DPfreq
+  
+  detP_matrix <- detectionP(RGset)
+  y <- colMeans(detP_matrix < detP)
   x <- 1:length(y)
   data <- data.frame(x, y, row.names = names(y))
   targets <- object@targets
