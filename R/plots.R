@@ -111,7 +111,7 @@ rotateData <- function(data, columns) {
 ##' @param threshold threshold value
 ##' @param col col
 ##' @return plot
-##' @author Tom Kuipers
+##' @author Tom Kuipers, ljsinke
 ##' @export
 ##' @import ggplot2
 
@@ -171,7 +171,7 @@ plotOP <- function(object,
   ## Get outliers
   outliers <- data$Row.names[data$x <= threshold]
   
-  gcscatterplot(
+  .gcscatterplot(
     data,
     x = "x",
     y = "y",
@@ -215,7 +215,7 @@ plotBS <- function(object,
   ## Get outliers
   outliers <- data$Row.names[data$x <= threshold]
   
-  gcscatterplot(
+  .gcscatterplot(
     data,
     x = "x",
     y = "y",
@@ -256,7 +256,7 @@ plotHC <- function(object,
   ## Get outliers
   outliers <- data$Row.names[data$x <= threshold]
   
-  gcscatterplot(
+  .gcscatterplot(
     data,
     x = "x",
     y = "y",
@@ -276,7 +276,7 @@ plotHC <- function(object,
 ##' @param threshold threshold value
 ##' @param col col
 ##' @return plot
-##' @author Tom Kuipers
+##' @author Tom Kuipers, ljsinke
 ##' @export
 ##' @import ggplot2
 
@@ -292,7 +292,7 @@ plotDP <- function(object,
   ## Get outliers
   outliers <- data$Row.names[data$y <= threshold]
   
-  gcscatterplot(
+  .gcscatterplot(
     data,
     x = "x",
     y = "y",
