@@ -304,7 +304,7 @@ plotDP <- function(object,
     threshold_h = threshold,
     outliers = outliers,
     xlab = "Samples",
-    ylab = "# Probes p-value < 0.01",
+    ylab = paste0("Proportion of probes with p-value < ", detP),
     main = "Detection p-value based on negative control probes"
   )
 }
