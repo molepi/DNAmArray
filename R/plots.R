@@ -286,7 +286,7 @@ plotDP <- function(object,
                    threshold,
                    col = NULL) {
   
-  detP_matrix <- detectionP(RGset)
+  detP_matrix <- detectionP(object)
   y <- colMeans(detP_matrix < detP)
   x <- 1:length(y)
   data <- data.frame(x, y, row.names = names(y))
