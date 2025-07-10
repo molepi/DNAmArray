@@ -19,7 +19,7 @@ utils::globalVariables(c(
 ##' @param ylim ylim
 ##' @param main main
 ##' @return plot
-##' @author Tom Kuipers
+##' @author tkuipers
 ##' @export
 ##' @import ggplot2
 .gcscatterplot <- function(data,
@@ -94,10 +94,10 @@ utils::globalVariables(c(
 ##' @param data input data
 ##' @param columns col
 ##' @return data
-##' @author Tom Kuipers
+##' @author tkuipers
 ##' @export
 
-rotateData <- function(data, columns) {
+.rotateData <- function(data, columns) {
   data[, columns] <-
     c(0.5 * (data[, columns[1]] + data[, columns[2]]),
       data[, columns[1]] - data[, columns[2]])
@@ -115,7 +115,7 @@ rotateData <- function(data, columns) {
 ##' @param threshold array-specific threshold
 ##' @param col variable in targets to colour by
 ##' @return plot
-##' @author Tom Kuipers, ljsinke
+##' @author tkuipers, ljsinke
 ##' @export
 ##' @import ggplot2
 
@@ -125,7 +125,7 @@ plotMU <- function(object,
   MU <- log2(t(object@MU))
   targets <- object@targets
   data <- merge(MU, targets, by = "row.names")
-  data <- rotateData(data, columns = c("Methylated", "Unmethylated"))
+  data <- .rotateData(data, columns = c("Methylated", "Unmethylated"))
   
   ## Get outliers
   outliers <- data$Row.names[data$Methylated <= threshold]
@@ -178,7 +178,7 @@ plotOP <- function(object,
   targets <- object@targets
   data <- merge(data, targets, by = "row.names", suffixes = c("", ".y"))
   
-  data <- rotateData(data, columns = c("x", "y"))
+  data <- .rotateData(data, columns = c("x", "y"))
   
   ## Get outliers
   outliers <- data$Row.names[data$x <= threshold]
@@ -196,14 +196,26 @@ plotOP <- function(object,
   )
 }
 
-##' basic BS scatter plot
+##' Bisulfite Conversion I Quality Control
 ##'
 ##' @title BS quality control plot
+##' @description
+##' `plotBS` assesses bisulfite conversion efficiency using control probes, 
+##' identifying poorly converted samples. Type I BC control probes monitor the 
+##' efficiency of the bisulfite conversion. If the conversion reaction was 
+##' successful, the 'C' (converted) probes will be extended, but if the sample 
+##' has unconverted DNA, the 'U' (unconverted) probes are extended instead. 
+##' 
+##' Performance of the BC control probes C1 and C2 is monitored in the green 
+##' channel, and C3 and C4 are monitored in the red channel. The intensities 
+##' for the relevant channels are then combined for all BC control probes and 
+##' plotted per sample to ensure they are above the specified threshold.
+##' 
 ##' @param object input sData
 ##' @param threshold threshold value
 ##' @param col col
 ##' @return plot
-##' @author Tom Kuipers
+##' @author tkuipers, ljsinke
 ##' @export
 ##' @import ggplot2
 
@@ -222,7 +234,7 @@ plotBS <- function(object,
   targets <- object@targets
   data <- merge(data, targets, by = "row.names", suffixes = c("", ".y"))
   
-  data <- rotateData(data, columns = c("x", "y"))
+  data <- .rotateData(data, columns = c("x", "y"))
   
   ## Get outliers
   outliers <- data$Row.names[data$x <= threshold]
@@ -240,14 +252,23 @@ plotBS <- function(object,
   )
 }
 
-##' basic HC scatter plot
+##' Sample-independent overall quality control (Hyb)
 ##'
-##' @title HC quality control plot
+##' @title Sample-independent overall quality control (Hyb)
+##' @description
+##' `plotHC` uses hybridization controls to assess the hybridization step 
+##' using synthetic targets, which complement the array perfectly. These 
+##' synthetic targets are present in the hybridization buffer (RA1) at three 
+##' concentration levels, and their performance is only monitored in the green 
+##' channel. The difference in green intensity between the high (H) and low (L) 
+##' concentration is combined and can be plotted to ensure it is above the 
+##' specified threshold.
+##' 
 ##' @param object input sData
 ##' @param threshold threshold value
 ##' @param col col
 ##' @return plot
-##' @author Tom Kuipers
+##' @author tkuipers, ljsinke
 ##' @export
 ##' @import ggplot2
 
@@ -281,15 +302,22 @@ plotHC <- function(object,
   )
 }
 
-##' basic DP scatter plot
+##' Detection p-value based on NP probes
 ##'
-##' @title DP quality control plot
+##' @title Detection p-value based on NP probes
+##' @description
+##' This plot uses negative control probes, which are randomly permuted 
+##' sequences that should not hybridize to the DNA template. The mean signal 
+##' of these probes defines the background signal. This plot therefore show 
+##' the fraction of probe visually distinct from the background signal in each 
+##' sample, coloured by array number.
+##' 
 ##' @param object input RGset
 ##' @param detP detection p-value threshold
 ##' @param threshold proportion of probes required
 ##' @param col col
 ##' @return plot
-##' @author Tom Kuipers, ljsinke
+##' @author tkuipers, ljsinke
 ##' @export
 ##' @import ggplot2
 
@@ -321,13 +349,16 @@ plotDP <- function(object,
   )
 }
 
-##' get outliers
+##' Get outliers
 ##'
-##' @title get outliers
+##' @title Get outliers
+##' @description
+##' A simple function to extract outliers from targets.
+##' 
 ##' @param object input sData
 ##' @param thresholds threshold values
 ##' @return outliers
-##' @author Tom Kuipers
+##' @author tkuipers, ljsinke
 ##' @export
 
 get_outliers <- function(object, thresholds) {
@@ -349,7 +380,7 @@ get_outliers <- function(object, thresholds) {
   data <- data.frame(x, y)
   targets <- object@targets
   data <- merge(data, targets, by = "row.names", suffixes = c("", ".y"))
-  data <- rotateData(data, columns = c("x", "y"))
+  data <- .rotateData(data, columns = c("x", "y"))
   outliers$OP <- data$Row.names[data$x <= thresholds[2]]
   
   ## BS
@@ -362,7 +393,7 @@ get_outliers <- function(object, thresholds) {
   data <- data.frame(x, y)
   targets <- object@targets
   data <- merge(data, targets, by = "row.names", suffixes = c("", ".y"))
-  data <- rotateData(data, columns = c("x", "y"))
+  data <- .rotateData(data, columns = c("x", "y"))
   outliers$BS <- data$Row.names[data$x <= thresholds[3]]
   
   ## HC
