@@ -104,12 +104,16 @@ rotateData <- function(data, columns) {
   data
 }
 
-##' basic MU scatter plot
+##' Rotated MU plot
 ##'
-##' @title MU quality control plot
+##' @title Rotated MU plot
+##' @description
+##' Plots the median methylated and unmethylated log2 intensities per sample,
+##' flagging low intensity outliers.
+##' 
 ##' @param object input sData
-##' @param threshold threshold value
-##' @param col col
+##' @param threshold array-specific threshold
+##' @param col variable in targets to colour by
 ##' @return plot
 ##' @author Tom Kuipers, ljsinke
 ##' @export
@@ -140,14 +144,22 @@ plotMU <- function(object,
   )
 }
 
-##' basic OP scatter plot
+##' Sample-dependent overall quality control
 ##'
-##' @title OP quality control plot
+##' @title Sample-dependent overall quality control
+##' @description
+##' NP control probes query each of the four nucleotides in a non-polymorphic region of the bisulfite genome. 
+##' Signal intensity from these probes in the red (A and T) and green (C and G) channels can then be used to 
+##' test overall performance of the assay, from amplification to detection. Intensity should be high in the 
+##' red channel for NP probes querying A and T nucleotides, and high in the green channel for NP probes 
+##' querying G and C nucleotides. The intensities for the relevant channel for NP probes are then combined 
+##' and plotted per sample, where they should be above the specific threshold.
+##' 
 ##' @param object input sData
-##' @param threshold threshold value
-##' @param col col
+##' @param threshold array-specific threshold
+##' @param col variable in targets to colour by
 ##' @return plot
-##' @author Tom Kuipers
+##' @author tkuipers, ljsinke
 ##' @export
 ##' @import ggplot2
 
