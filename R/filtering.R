@@ -14,9 +14,6 @@
 ##' @importFrom Biobase varMetadata AnnotatedDataFrame phenoData featureData experimentData annotation protocolData assayDataElement
 probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
 
-  if (!inherits(RGset, "RGChannelSetExtended"))
-        stop("RGset should be of class 'RGChannelSetExtended' in order to perform filtering on number of beads!")
-
     ##Filter on number of beads
     if(verbose)
         cat("Filtering on number of beads... \n")
