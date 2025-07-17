@@ -99,11 +99,6 @@ probeFiltering <- function(RGset, cutbead=3, zeroint=TRUE, verbose=TRUE){
 reduce <- function(GRset, RGset, what=c("beta", "M"), cutp=0.01, cutsamples=0.95, cutcpgs=0.95, verbose=TRUE, ...) {
 
     what <- match.arg(what)
-    
-    if (!inherits(GRset, "GenomicRatioSet"))
-        stop("First argument should be an object of class 'GenomicRatioSet' from preprocessFunnorm!")
-    if (!inherits(RGset, "RGChannelSet") | !inherits(RGset, "RGChannelSetExtended"))
-        stop("Second argument should be an object of class RGChannelSet or RGChannelSetExtended from probeFiltering!")
 
     ##Filter on detection P-value using minfi's detectionP
     if(verbose)
